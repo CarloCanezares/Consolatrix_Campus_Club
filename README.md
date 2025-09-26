@@ -24,3 +24,10 @@ in Virtual Environment
 ```bash
 pip freeze
 ```
+Then RUN
+
+
+If Windows can’t find the executable (pipenv.exe) since the Scripts folder isn’t in your PATH.
+```bash
+python -m pipenv shell
+```

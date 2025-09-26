@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arts & Creativity - Consolatrix Campus Club</title>
+    <title>Reading & Literature - Consolatrix Campus Club</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -11,10 +11,10 @@
             --secondary-navy: #1e293b;
             --dark-navy: #020617;
             --light-navy: #334155;
-            --accent-purple: #a855f7;
-            --accent-pink: #ec4899;
-            --accent-blue: #3b82f6;
-            --accent-yellow: #fbbf24;
+            --accent-burgundy: #7f1d1d;
+            --accent-crimson: #991b1b;
+            --accent-maroon: #881337;
+            --accent-wine: #9f1239;
             --text-dark: #1f2937;
             --text-light: #6b7280;
             --bg-primary: #ffffff;
@@ -28,10 +28,10 @@
             --primary-navy: #1e40af;
             --secondary-navy: #3b82f6;
             --light-navy: #60a5fa;
-            --accent-purple: #c084fc;
-            --accent-pink: #f472b6;
-            --accent-blue: #60a5fa;
-            --accent-yellow: #fcd34d;
+            --accent-burgundy: #dc2626;
+            --accent-crimson: #ef4444;
+            --accent-maroon: #f43f5e;
+            --accent-wine: #fb7185;
             --text-dark: #f9fafb;
             --text-light: #d1d5db;
             --bg-primary: #0f172a;
@@ -122,7 +122,7 @@
         .menu-item:hover, .menu-item.active {
             background: var(--secondary-navy);
             color: white;
-            border-left-color: var(--accent-purple);
+            border-left-color: var(--accent-burgundy);
         }
 
         .menu-item i {
@@ -259,53 +259,49 @@
             transform: scale(1.1);
         }
 
-        /* Arts Hero */
-        .arts-hero {
+        /* Literature Hero */
+        .literature-hero {
             min-height: 70vh;
             display: flex;
             align-items: center;
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 50%, var(--accent-blue) 100%);
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #881337 100%);
             position: relative;
             overflow: hidden;
             margin-top: 70px;
         }
 
-        .arts-hero::before {
+        .literature-hero::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(255, 255, 255, 0.03) 10px,
-                rgba(255, 255, 255, 0.03) 20px
-            );
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
         }
 
-        .arts-hero::after {
+        .literature-hero::after {
             content: '';
             position: absolute;
-            width: 600px;
-            height: 600px;
+            width: 500px;
+            height: 500px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            top: -200px;
-            left: -200px;
-            animation: artFloat 20s ease-in-out infinite;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+            top: -150px;
+            right: -150px;
+            animation: literaryFloat 22s ease-in-out infinite;
         }
 
-        @keyframes artFloat {
+        @keyframes literaryFloat {
             0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            25% { transform: translate(100px, -50px) rotate(90deg) scale(1.1); }
-            50% { transform: translate(-50px, 100px) rotate(180deg) scale(0.9); }
-            75% { transform: translate(-100px, -50px) rotate(270deg) scale(1.05); }
+            25% { transform: translate(-50px, 50px) rotate(90deg) scale(1.15); }
+            50% { transform: translate(50px, -30px) rotate(180deg) scale(0.85); }
+            75% { transform: translate(-30px, -50px) rotate(270deg) scale(1.1); }
         }
 
-        .hero-content-arts {
+        .hero-content-literature {
             max-width: 1400px;
             margin: 0 auto;
             padding: 4rem 2rem;
@@ -314,30 +310,32 @@
             z-index: 1;
         }
 
-        .hero-content-arts h1 {
+        .hero-content-literature h1 {
             font-size: 4.5rem;
             font-weight: 900;
             color: white;
             margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: -2px;
+            text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.4);
+            line-height: 1.1;
         }
 
-        .hero-content-arts .subtitle {
+        .hero-content-literature .subtitle {
             font-size: 2rem;
-            color: rgba(255, 255, 255, 0.95);
+            color: rgba(255, 255, 255, 1);
             font-style: italic;
             margin-bottom: 2rem;
             font-weight: 300;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .hero-content-arts p {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.9);
+        .hero-content-literature p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.95);
             max-width: 800px;
             margin: 0 auto 3rem;
-            line-height: 1.7;
+            line-height: 1.8;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
         }
 
         .hero-cta {
@@ -363,7 +361,7 @@
 
         .hero-btn-primary {
             background: white;
-            color: var(--accent-purple);
+            color: var(--accent-burgundy);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
@@ -382,32 +380,6 @@
         .hero-btn-secondary:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: translateY(-3px);
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-            margin-top: 3rem;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 900;
-            color: white;
-            display: block;
-        }
-
-        .stat-label {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         /* Filter Section */
@@ -450,9 +422,9 @@
         }
 
         .filter-btn:hover, .filter-btn.active {
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            background: linear-gradient(135deg, var(--accent-burgundy) 0%, var(--accent-crimson) 100%);
             color: white;
-            border-color: var(--accent-purple);
+            border-color: var(--accent-burgundy);
             transform: translateY(-2px);
         }
 
@@ -481,25 +453,25 @@
             color: var(--text-light);
         }
 
-        /* Arts Grid */
-        .arts-section {
+        /* Literature Grid */
+        .literature-section {
             padding: 4rem 0;
             background: var(--bg-primary);
         }
 
-        .arts-container {
+        .literature-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem;
         }
 
-        .arts-grid {
+        .literature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 2rem;
         }
 
-        .art-card {
+        .literature-card {
             background: var(--card-bg);
             border-radius: 24px;
             overflow: hidden;
@@ -509,93 +481,106 @@
             position: relative;
         }
 
-        .art-card::before {
+        .literature-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.1) 0%, rgba(153, 27, 27, 0.1) 100%);
             opacity: 0;
             transition: opacity 0.4s ease;
             z-index: 1;
             pointer-events: none;
         }
 
-        .art-card:hover::before {
+        .literature-card:hover::before {
             opacity: 1;
         }
 
-        .art-card:hover {
+        .literature-card:hover {
             transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(168, 85, 247, 0.25);
-            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 25px 50px rgba(127, 29, 29, 0.25);
+            border-color: rgba(127, 29, 29, 0.3);
         }
 
-        .art-image {
+        .literature-image {
             height: 240px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 6rem;
+            font-size: 4rem;
             position: relative;
             overflow: hidden;
+            color: white;
         }
 
-        .art-image.visual-arts {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        .literature-image.book-club {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
         }
 
-        .art-image.drama {
-            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+        .literature-image.creative-writing {
+            background: linear-gradient(135deg, #881337 0%, #9f1239 100%);
         }
 
-        .art-image.photography {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        .literature-image.journalism {
+            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
         }
 
-        .art-image.digital-art {
-            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        .literature-image.poetry {
+            background: linear-gradient(135deg, #9f1239 0%, #881337 100%);
         }
 
-        .art-image.sculpture {
-            background: linear-gradient(135deg, #84cc16 0%, #10b981 100%);
+        .literature-image.debate {
+            background: linear-gradient(135deg, #7f1d1d 0%, #881337 100%);
         }
 
-        .art-image.graphic-design {
-            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        .literature-image.library {
+            background: linear-gradient(135deg, #881337 0%, #7f1d1d 100%);
         }
 
-        .art-image.animation {
-            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+        .literature-image.publishing {
+            background: linear-gradient(135deg, #9f1239 0%, #991b1b 100%);
         }
 
-        .art-image.calligraphy {
-            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        .literature-image.literature {
+            background: linear-gradient(135deg, #991b1b 0%, #881337 100%);
         }
 
-        .art-image.crafts {
-            background: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
+        .literature-image.storytelling {
+            background: linear-gradient(135deg, #7f1d1d 0%, #9f1239 100%);
         }
 
-        .art-image::before {
+        .literature-image::before {
             content: '';
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            animation: artShimmer 4s ease-in-out infinite;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255,255,255,0.2) 0%, transparent 50%);
+            animation: bookShimmer 8s ease-in-out infinite;
         }
 
-        @keyframes artShimmer {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(20px, 20px) rotate(10deg); }
+        @keyframes bookShimmer {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 0.5;
+            }
+            33% { 
+                transform: translate(30px, -30px) scale(1.15) rotate(120deg);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translate(-30px, 30px) scale(0.85) rotate(240deg);
+                opacity: 0.6;
+            }
         }
 
-        .art-badge {
+        .literature-badge {
             position: absolute;
             top: 1rem;
             right: 1rem;
@@ -604,14 +589,14 @@
             border-radius: 50px;
             font-size: 0.8rem;
             font-weight: 600;
-            color: var(--accent-purple);
+            color: var(--accent-burgundy);
         }
 
-        .art-content {
+        .literature-content {
             padding: 2.5rem;
         }
 
-        .art-title {
+        .literature-title {
             font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 0.75rem;
@@ -619,8 +604,8 @@
             letter-spacing: -0.5px;
         }
 
-        .art-category {
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+        .literature-category {
+            background: linear-gradient(135deg, var(--accent-burgundy) 0%, var(--accent-crimson) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -631,14 +616,14 @@
             letter-spacing: 0.5px;
         }
 
-        .art-description {
+        .literature-description {
             color: var(--text-light);
             line-height: 1.7;
             margin-bottom: 1.75rem;
             font-size: 0.95rem;
         }
 
-        .art-info {
+        .literature-info {
             display: flex;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
@@ -654,10 +639,10 @@
         }
 
         .info-item i {
-            color: var(--accent-purple);
+            color: var(--accent-burgundy);
         }
 
-        .art-tags {
+        .literature-tags {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
@@ -665,19 +650,19 @@
         }
 
         .tag {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.1) 0%, rgba(153, 27, 27, 0.1) 100%);
             padding: 0.5rem 1rem;
             border-radius: 25px;
             font-size: 0.8rem;
             color: var(--text-dark);
             font-weight: 600;
-            border: 1px solid rgba(168, 85, 247, 0.2);
+            border: 1px solid rgba(127, 29, 29, 0.2);
         }
 
         .apply-btn {
             width: 100%;
             padding: 1.25rem;
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
             color: white;
             border: none;
             border-radius: 16px;
@@ -690,13 +675,13 @@
             justify-content: center;
             gap: 0.75rem;
             letter-spacing: 0.3px;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+            box-shadow: 0 4px 15px rgba(127, 29, 29, 0.3);
         }
 
         .apply-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(168, 85, 247, 0.5);
-            background: linear-gradient(135deg, #9333ea 0%, #db2777 100%);
+            box-shadow: 0 12px 30px rgba(127, 29, 29, 0.5);
+            background: linear-gradient(135deg, #6b1515 0%, #7f1d1d 100%);
         }
 
         /* Modal */
@@ -730,7 +715,7 @@
 
         .modal-header {
             padding: 2.5rem;
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
             color: white;
             border-radius: 20px 20px 0 0;
             position: relative;
@@ -807,7 +792,7 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--accent-purple);
+            border-color: var(--accent-burgundy);
         }
 
         .form-group textarea {
@@ -818,7 +803,7 @@
         .submit-btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            background: linear-gradient(135deg, var(--accent-burgundy) 0%, var(--accent-crimson) 100%);
             color: white;
             border: none;
             border-radius: 12px;
@@ -830,7 +815,7 @@
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+            box-shadow: 0 8px 20px rgba(127, 29, 29, 0.4);
         }
 
         /* Footer */
@@ -847,19 +832,11 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero-content-arts h1 {
+            .hero-content-literature h1 {
                 font-size: 2.5rem;
             }
 
-            .hero-stats {
-                gap: 1.5rem;
-            }
-
-            .stat-number {
-                font-size: 2rem;
-            }
-
-            .arts-grid {
+            .literature-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -893,7 +870,7 @@
         </div>
         
         <nav class="sidebar-menu">
-            <a href="{% url 'index' %}" class="menu-item active">
+            <a href="{% url 'index'%}" class="menu-item">
                 <i class="fas fa-home"></i>
                 Home
             </a>
@@ -975,8 +952,8 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <a href="#" class="logo">
-                    <i class="fas fa-palette"></i>
-                    Consolatrix Campus
+                    <i class="fas fa-book"></i>
+                    Reading & Literature
                 </a>
             </div>
             <div class="nav-right">
@@ -987,37 +964,22 @@
         </div>
     </nav>
 
-    <!-- Arts Hero Section -->
-    <section class="arts-hero">
-        <div class="hero-content-arts">
-            <h1>Arts & Creativity</h1>
-            <div class="subtitle">Where Imagination Comes to Life</div>
-            <p>Discover your artistic potential through our diverse range of creative clubs and activities. From traditional fine arts to cutting-edge digital design, we provide the space and community for every form of creative expression.</p>
+    <!-- Literature Hero -->
+    <section class="literature-hero">
+        <div class="hero-content-literature">
+            <h1>Reading & Literature</h1>
+            <p class="subtitle">Where Words Come Alive</p>
+            <p>Immerse yourself in the world of books, stories, and written expression. From classic literature to creative writing, journalism to poetry, discover the power of words and join a community of passionate readers and writers.</p>
             
             <div class="hero-cta">
-                <a href="#arts-grid" class="hero-btn hero-btn-primary">
-                    <i class="fas fa-palette"></i>
+                <button class="hero-btn hero-btn-primary" onclick="document.getElementById('literatureGrid').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fas fa-book-open"></i>
                     Explore Clubs
+                </button>
+                <a href="#publications" class="hero-btn hero-btn-secondary">
+                    <i class="fas fa-feather-alt"></i>
+                    View Publications
                 </a>
-                <a href="#apply" class="hero-btn hero-btn-secondary">
-                    <i class="fas fa-plus"></i>
-                    Join Now
-                </a>
-            </div>
-
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">15+</span>
-                    <div class="stat-label">Art Clubs</div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">200+</span>
-                    <div class="stat-label">Active Artists</div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">50+</span>
-                    <div class="stat-label">Exhibitions</div>
-                </div>
             </div>
         </div>
     </section>
@@ -1026,328 +988,333 @@
     <section class="filter-section">
         <div class="filter-container">
             <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterArts('all')">All</button>
-                <button class="filter-btn" onclick="filterArts('visual-arts')">Visual Arts</button>
-                <button class="filter-btn" onclick="filterArts('digital-art')">Digital Art</button>
-                <button class="filter-btn" onclick="filterArts('photography')">Photography</button>
-                <button class="filter-btn" onclick="filterArts('crafts')">Crafts</button>
-                <button class="filter-btn" onclick="filterArts('drama')">Drama</button>
+                <button class="filter-btn active" data-filter="all">All Activities</button>
+                <button class="filter-btn" data-filter="reading">Reading</button>
+                <button class="filter-btn" data-filter="writing">Writing</button>
+                <button class="filter-btn" data-filter="journalism">Journalism</button>
+                <button class="filter-btn" data-filter="discussion">Discussion</button>
             </div>
-            
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search arts clubs..." oninput="searchArts(this.value)">
+                <input type="text" id="searchInput" placeholder="Search literary activities...">
             </div>
         </div>
     </section>
 
-    <!-- Arts Grid Section -->
-    <section class="arts-section" id="arts-grid">
-        <div class="arts-container">
-            <div class="arts-grid" id="artsGrid">
-                <!-- Visual Arts Card -->
-                <div class="art-card" data-category="visual-arts">
-                    <div class="art-image visual-arts">
-                        <i class="fas fa-paint-brush"></i>
-                        <div class="art-badge">Popular</div>
+    <!-- Literature Grid -->
+    <section class="literature-section">
+        <div class="literature-container">
+            <div class="literature-grid" id="literatureGrid">
+                <!-- Book Club -->
+                <div class="literature-card" data-category="reading discussion">
+                    <div class="literature-image book-club">
+                        <i class="fas fa-book"></i>
+                        <span class="literature-badge">Open Slots: 15</span>
                     </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Visual Arts Society</h3>
-                        <div class="art-category">Visual Arts</div>
-                        <p class="art-description">Express yourself through traditional and contemporary visual arts. Learn painting, drawing, sketching, and mixed media techniques in our fully equipped studio.</p>
+                    <div class="literature-content">
+                        <h3 class="literature-title">Book Club</h3>
+                        <p class="literature-category">Reading • Discussion</p>
+                        <p class="literature-description">Join lively discussions about contemporary and classic literature. Read diverse books monthly and share insights with fellow book lovers in a supportive community.</p>
                         
-                        <div class="art-info">
+                        <div class="literature-info">
                             <div class="info-item">
                                 <i class="fas fa-clock"></i>
-                                Mon & Wed 4-6 PM
+                                <span>Fri • 4-6 PM</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-users"></i>
-                                45 Members
+                                <span>20-25 members</span>
                             </div>
                         </div>
-                        
-                        <div class="art-tags">
-                            <span class="tag">Painting</span>
-                            <span class="tag">Drawing</span>
-                            <span class="tag">Mixed Media</span>
+
+                        <div class="literature-tags">
+                            <span class="tag">All Genres</span>
+                            <span class="tag">Monthly Reads</span>
+                            <span class="tag">Lively Discussions</span>
                         </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Visual Arts Society')">
-                            <i class="fas fa-palette"></i>
+
+                        <button class="apply-btn" onclick="openModal('Book Club')">
+                            <i class="fas fa-paper-plane"></i>
                             Join Club
                         </button>
                     </div>
                 </div>
 
-                <!-- Drama Club Card -->
-                <div class="art-card" data-category="drama">
-                    <div class="art-image drama">
-                        <i class="fas fa-theater-masks"></i>
-                        <div class="art-badge">New</div>
+                <!-- Creative Writing -->
+                <div class="literature-card" data-category="writing">
+                    <div class="literature-image creative-writing">
+                        <i class="fas fa-pen-fancy"></i>
+                        <span class="literature-badge">Open Slots: 12</span>
                     </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Drama & Theater Club</h3>
-                        <div class="art-category">Performing Arts</div>
-                        <p class="art-description">Bring stories to life on stage! Develop your acting skills, participate in productions, and explore the world of theatrical performance and storytelling.</p>
+                    <div class="literature-content">
+                        <h3 class="literature-title">Creative Writing</h3>
+                        <p class="literature-category">Writing • Fiction</p>
+                        <p class="literature-description">Develop your storytelling skills through creative writing workshops. Learn narrative techniques, character development, and craft compelling short stories and novels.</p>
                         
-                        <div class="art-info">
+                        <div class="literature-info">
                             <div class="info-item">
                                 <i class="fas fa-clock"></i>
-                                Tue & Thu 5-7 PM
+                                <span>Tue, Thu • 3:30-5:30 PM</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-users"></i>
-                                32 Members
+                                <span>15-18 writers</span>
                             </div>
                         </div>
+
+                        <div class="literature-tags">
+                            <span class="tag">Fiction Writing</span>
+                            <span class="tag">Workshops</span>
+                            <span class="tag">Peer Review</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Creative Writing')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Workshop
+                        </button>
+                    </div>
+                </div>
+
+                <!-- School Journalism -->
+                <div class="literature-card" data-category="journalism writing">
+                    <div class="literature-image journalism">
+                        <i class="fas fa-newspaper"></i>
+                        <span class="literature-badge">Open Slots: 10</span>
+                    </div>
+                    <div class="literature-content">
+                        <h3 class="literature-title">School Journalism</h3>
+                        <p class="literature-category">Journalism • News Writing</p>
+                        <p class="literature-description">Report on campus news, write feature stories, and develop journalistic skills. Contribute to the school newspaper and learn ethical reporting practices.</p>
                         
-                        <div class="art-tags">
-                            <span class="tag">Acting</span>
-                            <span class="tag">Theater</span>
+                        <div class="literature-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Wed, Fri • 4-6 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-15 journalists</span>
+                            </div>
+                        </div>
+
+                        <div class="literature-tags">
+                            <span class="tag">News Writing</span>
+                            <span class="tag">Interviews</span>
+                            <span class="tag">Publication</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('School Journalism')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Poetry Circle -->
+                <div class="literature-card" data-category="writing reading">
+                    <div class="literature-image poetry">
+                        <i class="fas fa-feather-alt"></i>
+                        <span class="literature-badge">Open Slots: 14</span>
+                    </div>
+                    <div class="literature-content">
+                        <h3 class="literature-title">Poetry Circle</h3>
+                        <p class="literature-category">Poetry • Creative Expression</p>
+                        <p class="literature-description">Express yourself through the art of poetry. Write, share, and analyze poems in various forms and styles, from sonnets to free verse and spoken word.</p>
+                        
+                        <div class="literature-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Wed • 3-5 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-16 poets</span>
+                            </div>
+                        </div>
+
+                        <div class="literature-tags">
+                            <span class="tag">All Styles</span>
+                            <span class="tag">Open Mic</span>
                             <span class="tag">Performance</span>
                         </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Drama & Theater Club')">
-                            <i class="fas fa-theater-masks"></i>
-                            Join Club
+
+                        <button class="apply-btn" onclick="openModal('Poetry Circle')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Circle
                         </button>
                     </div>
                 </div>
 
-                <!-- Photography Club Card -->
-                <div class="art-card" data-category="photography">
-                    <div class="art-image photography">
-                        <i class="fas fa-camera"></i>
+                <!-- Debate Club -->
+                <div class="literature-card" data-category="discussion">
+                    <div class="literature-image debate">
+                        <i class="fas fa-comments"></i>
+                        <span class="literature-badge">Open Slots: 16</span>
                     </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Photography Club</h3>
-                        <div class="art-category">Photography</div>
-                        <p class="art-description">Capture the world through your lens. Learn composition, lighting, and post-processing techniques. Participate in photo walks and exhibitions.</p>
+                    <div class="literature-content">
+                        <h3 class="literature-title">Debate & Rhetoric</h3>
+                        <p class="literature-category">Discussion • Public Speaking</p>
+                        <p class="literature-description">Master the art of persuasive speaking and critical thinking. Participate in debates, improve argumentation skills, and compete in regional tournaments.</p>
                         
-                        <div class="art-info">
+                        <div class="literature-info">
                             <div class="info-item">
                                 <i class="fas fa-clock"></i>
-                                Sat 2-5 PM
+                                <span>Tue, Thu • 4-6 PM</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-users"></i>
-                                28 Members
+                                <span>18-22 debaters</span>
                             </div>
                         </div>
-                        
-                        <div class="art-tags">
-                            <span class="tag">Portrait</span>
-                            <span class="tag">Landscape</span>
-                            <span class="tag">Street Photography</span>
+
+                        <div class="literature-tags">
+                            <span class="tag">Critical Thinking</span>
+                            <span class="tag">Public Speaking</span>
+                            <span class="tag">Competitions</span>
                         </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Photography Club')">
-                            <i class="fas fa-camera"></i>
-                            Join Club
+
+                        <button class="apply-btn" onclick="openModal('Debate & Rhetoric')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Team
                         </button>
                     </div>
                 </div>
 
-                <!-- Digital Art Card -->
-                <div class="art-card" data-category="digital-art">
-                    <div class="art-image digital-art">
-                        <i class="fas fa-laptop"></i>
+                <!-- Library Assistants -->
+                <div class="literature-card" data-category="reading">
+                    <div class="literature-image library">
+                        <i class="fas fa-book-open"></i>
+                        <span class="literature-badge">Open Slots: 8</span>
                     </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Digital Art Studio</h3>
-                        <div class="art-category">Digital Art</div>
-                        <p class="art-description">Create stunning digital artwork using industry-standard software. Learn digital painting, concept art, and digital illustration techniques.</p>
+                    <div class="literature-content">
+                        <h3 class="literature-title">Library Assistants</h3>
+                        <p class="literature-category">Service • Book Curation</p>
+                        <p class="literature-description">Help manage the school library, curate book displays, assist fellow students, and promote reading culture throughout campus. Perfect for book lovers!</p>
                         
-                        <div class="art-info">
+                        <div class="literature-info">
                             <div class="info-item">
                                 <i class="fas fa-clock"></i>
-                                Wed & Fri 3-6 PM
+                                <span>Flexible Schedule</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-users"></i>
-                                38 Members
+                                <span>10-12 assistants</span>
                             </div>
                         </div>
-                        
-                        <div class="art-tags">
-                            <span class="tag">Digital Painting</span>
-                            <span class="tag">Concept Art</span>
-                            <span class="tag">Illustration</span>
+
+                        <div class="literature-tags">
+                            <span class="tag">Service Hours</span>
+                            <span class="tag">Book Management</span>
+                            <span class="tag">Reading Advocacy</span>
                         </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Digital Art Studio')">
-                            <i class="fas fa-laptop"></i>
-                            Join Club
+
+                        <button class="apply-btn" onclick="openModal('Library Assistants')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
                         </button>
                     </div>
                 </div>
 
-                <!-- Sculpture Club Card -->
-                <div class="art-card" data-category="visual-arts">
-                    <div class="art-image sculpture">
-                        <i class="fas fa-cube"></i>
+                <!-- Literary Magazine -->
+                <div class="literature-card" data-category="writing journalism">
+                    <div class="literature-image publishing">
+                        <i class="fas fa-file-alt"></i>
+                        <span class="literature-badge">Open Slots: 10</span>
                     </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Sculpture & 3D Arts</h3>
-                        <div class="art-category">Sculpture</div>
-                        <p class="art-description">Shape your ideas into reality. Work with clay, wood, metal, and modern materials to create three-dimensional art pieces.</p>
+                    <div class="literature-content">
+                        <h3 class="literature-title">Literary Magazine</h3>
+                        <p class="literature-category">Publishing • Editorial</p>
+                        <p class="literature-description">Produce the school's literary magazine. Edit submissions, design layouts, and publish student writing and artwork in a professional publication.</p>
                         
-                        <div class="art-info">
+                        <div class="literature-info">
                             <div class="info-item">
                                 <i class="fas fa-clock"></i>
-                                Thu & Sat 2-5 PM
+                                <span>Mon, Wed • 4-6 PM</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-users"></i>
-                                22 Members
+                                <span>12-15 editors</span>
                             </div>
                         </div>
-                        
-                        <div class="art-tags">
-                            <span class="tag">Clay Modeling</span>
-                            <span class="tag">Wood Carving</span>
-                            <span class="tag">Metal Work</span>
+
+                        <div class="literature-tags">
+                            <span class="tag">Publishing</span>
+                            <span class="tag">Editorial Skills</span>
+                            <span class="tag">Design & Layout</span>
                         </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Sculpture & 3D Arts')">
-                            <i class="fas fa-cube"></i>
-                            Join Club
+
+                        <button class="apply-btn" onclick="openModal('Literary Magazine')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Staff
                         </button>
                     </div>
                 </div>
 
-                <!-- Graphic Design Card -->
-                <div class="art-card" data-category="digital-art">
-                    <div class="art-image graphic-design">
-                        <i class="fas fa-vector-square"></i>
+                <!-- World Literature -->
+                <div class="literature-card" data-category="reading discussion">
+                    <div class="literature-image literature">
+                        <i class="fas fa-globe"></i>
+                        <span class="literature-badge">Open Slots: 15</span>
                     </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Graphic Design Collective</h3>
-                        <div class="art-category">Graphic Design</div>
-                        <p class="art-description">Master the art of visual communication. Learn logo design, branding, typography, and layout design for print and digital media.</p>
+                    <div class="literature-content">
+                        <h3 class="literature-title">World Literature</h3>
+                        <p class="literature-category">Reading • Cultural Study</p>
+                        <p class="literature-description">Explore literature from diverse cultures and time periods. Study classics, contemporary works, and gain global perspectives through reading and discussion.</p>
                         
-                        <div class="art-info">
+                        <div class="literature-info">
                             <div class="info-item">
                                 <i class="fas fa-clock"></i>
-                                Mon & Fri 4-6 PM
+                                <span>Thu • 3:30-5:30 PM</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-users"></i>
-                                35 Members
+                                <span>15-20 readers</span>
                             </div>
                         </div>
-                        
-                        <div class="art-tags">
-                            <span class="tag">Logo Design</span>
-                            <span class="tag">Typography</span>
-                            <span class="tag">Branding</span>
+
+                        <div class="literature-tags">
+                            <span class="tag">Classic & Modern</span>
+                            <span class="tag">Global Perspectives</span>
+                            <span class="tag">Deep Analysis</span>
                         </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Graphic Design Collective')">
-                            <i class="fas fa-vector-square"></i>
-                            Join Club
+
+                        <button class="apply-btn" onclick="openModal('World Literature')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Group
                         </button>
                     </div>
                 </div>
 
-                <!-- Animation Club Card -->
-                <div class="art-card" data-category="digital-art">
-                    <div class="art-image animation">
-                        <i class="fas fa-play-circle"></i>
+                <!-- Storytelling Club -->
+                <div class="literature-card" data-category="writing discussion">
+                    <div class="literature-image storytelling">
+                        <i class="fas fa-microphone"></i>
+                        <span class="literature-badge">Open Slots: 12</span>
                     </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Animation Workshop</h3>
-                        <div class="art-category">Animation</div>
-                        <p class="art-description">Bring your drawings to life! Learn 2D and 3D animation techniques, character design, and storytelling through motion.</p>
+                    <div class="literature-content">
+                        <h3 class="literature-title">Storytelling Club</h3>
+                        <p class="literature-category">Performance • Oral Tradition</p>
+                        <p class="literature-description">Master the ancient art of oral storytelling. Learn performance techniques, develop your narrative voice, and share stories at school and community events.</p>
                         
-                        <div class="art-info">
+                        <div class="literature-info">
                             <div class="info-item">
                                 <i class="fas fa-clock"></i>
-                                Tue & Sat 3-6 PM
+                                <span>Sat • 2-4 PM</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-users"></i>
-                                25 Members
+                                <span>10-15 storytellers</span>
                             </div>
                         </div>
-                        
-                        <div class="art-tags">
-                            <span class="tag">2D Animation</span>
-                            <span class="tag">3D Modeling</span>
-                            <span class="tag">Character Design</span>
-                        </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Animation Workshop')">
-                            <i class="fas fa-play-circle"></i>
-                            Join Club
-                        </button>
-                    </div>
-                </div>
 
-                <!-- Calligraphy Club Card -->
-                <div class="art-card" data-category="visual-arts">
-                    <div class="art-image calligraphy">
-                        <i class="fas fa-feather-alt"></i>
-                    </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Calligraphy & Lettering</h3>
-                        <div class="art-category">Calligraphy</div>
-                        <p class="art-description">Master the art of beautiful writing. Learn traditional and modern calligraphy styles, hand lettering, and typography design.</p>
-                        
-                        <div class="art-info">
-                            <div class="info-item">
-                                <i class="fas fa-clock"></i>
-                                Wed 4-6 PM
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-users"></i>
-                                18 Members
-                            </div>
+                        <div class="literature-tags">
+                            <span class="tag">Performance Art</span>
+                            <span class="tag">Voice Training</span>
+                            <span class="tag">Community Events</span>
                         </div>
-                        
-                        <div class="art-tags">
-                            <span class="tag">Traditional</span>
-                            <span class="tag">Modern</span>
-                            <span class="tag">Hand Lettering</span>
-                        </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Calligraphy & Lettering')">
-                            <i class="fas fa-feather-alt"></i>
-                            Join Club
-                        </button>
-                    </div>
-                </div>
 
-                <!-- Crafts Club Card -->
-                <div class="art-card" data-category="crafts">
-                    <div class="art-image crafts">
-                        <i class="fas fa-cut"></i>
-                    </div>
-                    <div class="art-content">
-                        <h3 class="art-title">Arts & Crafts Society</h3>
-                        <div class="art-category">Crafts</div>
-                        <p class="art-description">Create beautiful handmade items using various craft techniques. From jewelry making to paper crafts and textile arts.</p>
-                        
-                        <div class="art-info">
-                            <div class="info-item">
-                                <i class="fas fa-clock"></i>
-                                Fri 3-5 PM
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-users"></i>
-                                30 Members
-                            </div>
-                        </div>
-                        
-                        <div class="art-tags">
-                            <span class="tag">Jewelry</span>
-                            <span class="tag">Paper Crafts</span>
-                            <span class="tag">Textile Arts</span>
-                        </div>
-                        
-                        <button class="apply-btn" onclick="openModal('Arts & Crafts Society')">
-                            <i class="fas fa-cut"></i>
+                        <button class="apply-btn" onclick="openModal('Storytelling Club')">
+                            <i class="fas fa-paper-plane"></i>
                             Join Club
                         </button>
                     </div>
@@ -1360,45 +1327,88 @@
     <div class="modal" id="applicationModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Join Arts Club</h2>
                 <button class="modal-close" onclick="closeModal()">
                     <i class="fas fa-times"></i>
                 </button>
+                <h2 id="modalTitle">Apply for Literary Club</h2>
+                <p>Share your love of words with us</p>
             </div>
             <div class="modal-body">
                 <form id="applicationForm">
                     <div class="form-group">
-                        <label for="studentName">Full Name</label>
-                        <input type="text" id="studentName" name="studentName" required>
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" required placeholder="Enter your full name">
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="studentEmail">Email Address</label>
-                        <input type="email" id="studentEmail" name="studentEmail" required>
+                        <label for="studentId">Student ID *</label>
+                        <input type="text" id="studentId" required placeholder="e.g., 2024-12345">
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="studentId">Student ID</label>
-                        <input type="text" id="studentId" name="studentId" required>
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" required placeholder="your.email@consolatrix.edu">
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="yearLevel">Year Level</label>
-                        <select id="yearLevel" name="yearLevel" required>
-                            <option value="">Select Year Level</option>
-                            <option value="1st Year">1st Year</option>
-                            <option value="2nd Year">2nd Year</option>
-                            <option value="3rd Year">3rd Year</option>
-                            <option value="4th Year">4th Year</option>
+                        <label for="phone">Contact Number *</label>
+                        <input type="tel" id="phone" required placeholder="+63 912 345 6789">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yearLevel">Year Level *</label>
+                        <select id="yearLevel" required>
+                            <option value="">Select your year level</option>
+                            <option value="1st">1st Year</option>
+                            <option value="2nd">2nd Year</option>
+                            <option value="3rd">3rd Year</option>
+                            <option value="4th">4th Year</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="experience">Previous Experience</label>
-                        <textarea id="experience" name="experience" placeholder="Tell us about any relevant experience or why you're interested in joining this club..."></textarea>
+                        <label for="experience">Reading/Writing Experience *</label>
+                        <select id="experience" required>
+                            <option value="">Select your experience level</option>
+                            <option value="beginner">Beginner - Just Starting</option>
+                            <option value="intermediate">Intermediate - Regular Reader/Writer</option>
+                            <option value="advanced">Advanced - Passionate Enthusiast</option>
+                            <option value="published">Published - Have Published Work</option>
+                        </select>
                     </div>
-                    
+
+                    <div class="form-group">
+                        <label for="favoriteGenres">Favorite Literary Genres (Optional)</label>
+                        <input type="text" id="favoriteGenres" placeholder="e.g., Fantasy, Mystery, Poetry, Non-fiction">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="favoriteAuthors">Favorite Authors or Books (Optional)</label>
+                        <input type="text" id="favoriteAuthors" placeholder="Authors or titles you love">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="writingSamples">Writing Samples or Portfolio (Optional)</label>
+                        <input type="url" id="writingSamples" placeholder="Link to your blog, Medium, or portfolio">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whyJoin">Why do you want to join this literary activity? *</label>
+                        <textarea id="whyJoin" required placeholder="Tell us about your passion for reading and writing, and what you hope to achieve..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availability">Available Meeting Times *</label>
+                        <textarea id="availability" required placeholder="List your available days and times for meetings..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="goals">Literary Goals (Optional)</label>
+                        <textarea id="goals" placeholder="What do you hope to accomplish? (finish a novel, improve writing, meet fellow readers, etc.)"></textarea>
+                    </div>
+
                     <button type="submit" class="submit-btn">
+                        <i class="fas fa-check-circle"></i>
                         Submit Application
                     </button>
                 </form>
@@ -1408,11 +1418,27 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2024 Consolatrix Campus Club. All rights reserved.</p>
+        <p>&copy; 2024 Consolatrix Campus Club - Reading & Literature Division</p>
+        <p>Where stories and ideas come to life!</p>
     </footer>
 
     <script>
-        // Theme Toggle Functionality
+        let selectedLiterature = '';
+
+        // Sidebar Functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Theme Toggle
         function toggleTheme() {
             const body = document.body;
             const themeIcon = document.getElementById('theme-icon');
@@ -1432,88 +1458,130 @@
             }
         }
 
-        // Sidebar Functionality
-        function openSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
-        }
-
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        }
-
-        // Filter Functionality
-        function filterArts(category) {
-            const cards = document.querySelectorAll('.art-card');
-            const buttons = document.querySelectorAll('.filter-btn');
-            
-            // Update active button
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Filter cards
-            cards.forEach(card => {
-                if (category === 'all' || card.getAttribute('data-category') === category) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // Search Functionality
-        function searchArts(query) {
-            const cards = document.querySelectorAll('.art-card');
-            query = query.toLowerCase();
-            
-            cards.forEach(card => {
-                const title = card.querySelector('.art-title').textContent.toLowerCase();
-                const category = card.querySelector('.art-category').textContent.toLowerCase();
-                const description = card.querySelector('.art-description').textContent.toLowerCase();
-                const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
-                
-                if (title.includes(query) || category.includes(query) || description.includes(query) || 
-                    tags.some(tag => tag.includes(query))) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // Modal Functionality
-        function openModal(clubName) {
-            const modal = document.getElementById('applicationModal');
-            const modalTitle = document.getElementById('modalTitle');
-            modalTitle.textContent = `Join ${clubName}`;
-            modal.classList.add('active');
+        // Modal Functions
+        function openModal(literatureName) {
+            selectedLiterature = literatureName;
+            document.getElementById('modalTitle').textContent = `Apply for ${literatureName}`;
+            document.getElementById('applicationModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            const modal = document.getElementById('applicationModal');
-            modal.classList.remove('active');
+            document.getElementById('applicationModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            document.getElementById('applicationForm').reset();
         }
+
+        // Filter Functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const literatureCards = document.querySelectorAll('.literature-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                literatureCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const category = card.getAttribute('data-category');
+                        if (category.includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            literatureCards.forEach(card => {
+                const title = card.querySelector('.literature-title').textContent.toLowerCase();
+                const description = card.querySelector('.literature-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
 
         // Form Submission
         document.getElementById('applicationForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             // Get form data
-            const formData = new FormData(this);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
+            const formData = {
+                literature: selectedLiterature,
+                fullName: document.getElementById('fullName').value,
+                studentId: document.getElementById('studentId').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                yearLevel: document.getElementById('yearLevel').value,
+                experience: document.getElementById('experience').value,
+                favoriteGenres: document.getElementById('favoriteGenres').value,
+                favoriteAuthors: document.getElementById('favoriteAuthors').value,
+                writingSamples: document.getElementById('writingSamples').value,
+                whyJoin: document.getElementById('whyJoin').value,
+                availability: document.getElementById('availability').value,
+                goals: document.getElementById('goals').value
+            };
             
-            // Simulate form submission
-            alert('Application submitted successfully! We will contact you soon.');
+            console.log('Application submitted:', formData);
+            
+            // Show success message
+            alert(`Application submitted successfully for ${selectedLiterature}!\n\nThank you for your interest in joining our literary community! We'll review your application and contact you within 3-5 business days.\n\nKeep reading and writing!`);
+            
             closeModal();
-            this.reset();
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+                closeModal();
+            }
+        });
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('applicationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
         });
 
         // Smooth scrolling for anchor links
@@ -1528,13 +1596,6 @@
                     });
                 }
             });
-        });
-
-        // Close modal when clicking outside
-        document.getElementById('applicationModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
         });
     </script>
 </body>

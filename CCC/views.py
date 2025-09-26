@@ -18,3 +18,6 @@ def danceclub(request):
 
 def leadershipclub(request):
     return render(request, 'leadershipclub.html')
+
+def readingclub(request):
+    return render(request, 'readingclub.html')
