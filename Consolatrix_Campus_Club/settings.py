@@ -121,6 +121,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "signin"
+
+# Authentication / login redirect configuration
+LOGIN_URL = '/signin/'             # where login_required redirects unauthenticated users
+LOGIN_REDIRECT_URL = '/home/'      # where to go after a successful login
+LOGOUT_REDIRECT_URL = '/signin/'   # where to go after logout
+
+# Add these lines so Django uses your custom User and email backend
+AUTH_USER_MODEL = 'CCC.User'
+AUTHENTICATION_BACKENDS = [
+    'CCC.auth.EmailBackend',                     # your email backend
+    'django.contrib.auth.backends.ModelBackend', # fallback
+]
 

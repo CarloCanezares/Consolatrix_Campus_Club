@@ -5,6 +5,7 @@ from .models import User
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse, HttpResponseBadRequest
 import json
+import uuid
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 
@@ -36,26 +37,34 @@ def home(request):
 @ensure_csrf_cookie
 def signin(request):
     if request.method == "POST":
-        email = request.POST.get("email") or (json.loads(request.body).get("email") if request.content_type == "application/json" else None)
-        password = request.POST.get("password") or (json.loads(request.body).get("password") if request.content_type == "application/json" else None)
-        next_url = request.GET.get('next') or request.POST.get('next') or 'home'
+        # support both application/json (fetch) and regular form POST
+        if request.content_type == "application/json":
+            try:
+                payload = json.loads(request.body.decode('utf-8') if isinstance(request.body, (bytes, bytearray)) else request.body)
+            except Exception:
+                payload = {}
+            email = payload.get("email")
+            password = payload.get("password")
+        else:
+            email = request.POST.get("email")
+            password = request.POST.get("password")
 
-        print(f"Attempting login with email: {email}")  # Debug
         if not email or not password:
             messages.error(request, "Email and password are required.")
             return render(request, "signin.html", {"email": email or ""})
 
         user = authenticate(request, username=email, password=password)
-        print(f"Authentication result: {user}")
         if user is not None:
             login(request, user)
-            # JSON client
+            # redirect to next or home
+            next_url = request.GET.get("next") or request.POST.get("next") or "home"
+            # if client expects JSON respond accordingly
             if request.content_type == "application/json":
                 return JsonResponse({"success": True, "redirect": next_url})
             return redirect(next_url)
-        else:
-            messages.error(request, "Invalid email or password.")
-            return render(request, "signin.html", {"email": email or ""})
+
+        messages.error(request, "Invalid email or password.")
+        return render(request, "signin.html", {"email": email or ""})
 
     return render(request, "signin.html")
 
@@ -65,8 +74,8 @@ def signup(request):
     if request.method == 'POST':
         try:
             # accept JSON or form POST
-            if request.content_type == "application/json":
-                data = json.loads(request.body)
+            if request.content_type == 'application/json':
+                data = json.loads(request.body.decode('utf-8') if isinstance(request.body, (bytes, bytearray)) else request.body)
                 get = lambda k, default=None: data.get(k, default)
             else:
                 get = lambda k, default=None: request.POST.get(k, default)
@@ -75,7 +84,7 @@ def signup(request):
             password = get('password')
             first_name = get('firstName') or get('first_name') or ''
             last_name = get('lastName') or get('last_name') or ''
-            student_id = get('studentId') or get('student_id') or ''
+            student_id = (get('studentId') or get('student_id') or '').strip()
             year_level = get('yearLevel') or get('year_level') or None
             phone = get('phone') or ''
             bio = get('bio') or ''
@@ -85,25 +94,43 @@ def signup(request):
             if not email or not password:
                 raise ValueError("Email and password are required")
 
-            # create user with manager
+            # If student_id provided, ensure unique
+            if student_id:
+                if User.objects.filter(student_id=student_id).exists():
+                    msg = "Student ID already in use. Please use a different Student ID."
+                    if request.content_type == 'application/json':
+                        return JsonResponse({'success': False, 'message': msg}, status=400)
+                    messages.error(request, msg)
+                    return render(request, 'signup.html', {'email': email, 'student_id': student_id})
+
+            # Create user
             user = User.objects.create_user(
                 email=email,
                 password=password,
-                username=email,  # ensure username set (your manager sets this too)
+                username=email,
                 first_name=first_name,
                 last_name=last_name,
             )
-            # set extra fields if present
-            if student_id:
+
+            # If no student_id provided, generate a short unique one
+            if not student_id:
+                candidate = uuid.uuid4().hex[:8]
+                while User.objects.filter(student_id=candidate).exists():
+                    candidate = uuid.uuid4().hex[:8]
+                user.student_id = candidate
+            else:
                 user.student_id = student_id
-            if year_level:
-                try:
-                    user.year_level = int(year_level)
-                except Exception:
-                    user.year_level = None
+
+            # optional fields
+            try:
+                user.year_level = int(year_level) if year_level else None
+            except Exception:
+                user.year_level = None
+
             user.phone = phone
             user.bio = bio
-            # interests may be list or comma string
+
+            # normalize interests
             if isinstance(interests, str):
                 try:
                     interests = json.loads(interests)
@@ -114,17 +141,18 @@ def signup(request):
             user.save()
 
             login(request, user)
-            if request.content_type == "application/json":
-                return JsonResponse({"success": True, "message": "Account created", "redirect": "/home/"})
+
+            if request.content_type == 'application/json':
+                return JsonResponse({'success': True, 'message': 'Account created', 'redirect': '/home/'})
             messages.success(request, "Account created successfully.")
             return redirect('home')
 
         except Exception as e:
             err = str(e)
-            if request.content_type == "application/json":
-                return JsonResponse({"success": False, "message": f"Error creating account: {err}"}, status=400)
-            messages.error(request, f"Error creating account: {err}")
-            return render(request, 'signup.html')
+            if request.content_type == 'application/json':
+                return JsonResponse({'success': False, 'message': f'Error creating account: {err}'}, status=400)
+            messages.error(request, f'Error creating account: {err}')
+            return render(request, 'signup.html', {'email': email or ''})
 
     return render(request, 'signup.html')
 
