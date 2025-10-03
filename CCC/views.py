@@ -140,7 +140,15 @@ def signup(request):
             user.newsletter = newsletter
             user.save()
 
-            login(request, user)
+            # Authenticate to ensure backend is set (preferred)
+            auth_user = authenticate(request, username=email, password=password)
+            if auth_user is not None:
+                login(request, auth_user)
+            else:
+                # Fallback: set backend explicitly when authenticate didn't return a user
+                # (use the import path of your custom backend)
+                user.backend = 'CCC.auth.EmailBackend'
+                login(request, user)
 
             if request.content_type == 'application/json':
                 return JsonResponse({'success': True, 'message': 'Account created', 'redirect': '/home/'})
