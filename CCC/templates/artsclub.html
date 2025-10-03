@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arts & Creativity - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --dark-navy: #020617;
+            --light-navy: #334155;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --accent-blue: #3b82f6;
+            --accent-yellow: #fbbf24;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --primary-navy: #1e40af;
+            --secondary-navy: #3b82f6;
+            --light-navy: #60a5fa;
+            --accent-purple: #c084fc;
+            --accent-pink: #f472b6;
+            --accent-blue: #60a5fa;
+            --accent-yellow: #fcd34d;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-navy);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-navy);
+            background: var(--dark-navy);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-purple);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle-menu {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-family: inherit;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .theme-toggle-menu:hover {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-purple);
+        }
+
+        .theme-toggle-menu span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--secondary-navy);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--secondary-navy);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-navy);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--light-navy);
+            transform: scale(1.1);
+        }
+
+        /* Arts Hero */
+        .arts-hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 50%, var(--accent-blue) 100%);
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+
+        .arts-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+        }
+
+        .arts-hero::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            top: -200px;
+            left: -200px;
+            animation: artFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes artFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(100px, -50px) rotate(90deg) scale(1.1); }
+            50% { transform: translate(-50px, 100px) rotate(180deg) scale(0.9); }
+            75% { transform: translate(-100px, -50px) rotate(270deg) scale(1.05); }
+        }
+
+        .hero-content-arts {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content-arts h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content-arts .subtitle {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero-content-arts p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .hero-btn {
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hero-btn-primary {
+            background: white;
+            color: var(--accent-purple);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-secondary);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            color: white;
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--border-color);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            flex: 1;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .search-box i {
+            color: var(--text-light);
+        }
+
+        /* Arts Grid */
+        .arts-section {
+            padding: 4rem 0;
+            background: var(--bg-primary);
+        }
+
+        .arts-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .arts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .art-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .art-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .art-card:hover::before {
+            opacity: 1;
+        }
+
+        .art-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(168, 85, 247, 0.25);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .art-image {
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .art-image.visual-arts {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        }
+
+        .art-image.drama {
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+        }
+
+        .art-image.photography {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        .art-image.digital-art {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        }
+
+        .art-image.sculpture {
+            background: linear-gradient(135deg, #84cc16 0%, #10b981 100%);
+        }
+
+        .art-image.graphic-design {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        }
+
+        .art-image.animation {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+        }
+
+        .art-image.calligraphy {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        }
+
+        .art-image.crafts {
+            background: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
+        }
+
+        .art-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: artShimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes artShimmer {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(20px, 20px) rotate(10deg); }
+        }
+
+        .art-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-purple);
+        }
+
+        .art-content {
+            padding: 2.5rem;
+        }
+
+        .art-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .art-category {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .art-description {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1.75rem;
+            font-size: 0.95rem;
+        }
+
+        .art-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .info-item i {
+            color: var(--accent-purple);
+        }
+
+        .art-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(168, 85, 247, 0.5);
+            background: linear-gradient(135deg, #9333ea 0%, #db2777 100%);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-navy);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content-arts h1 {
+                font-size: 2.5rem;
+            }
+
+            .arts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                Consolatrix Campus
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a href="{% url 'home' %}" class="menu-item active">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="#clubs" class="menu-item">
+                <i class="fas fa-users"></i>
+                Browse Clubs
+            </a>
+            <a href="#events" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="#about" class="menu-item">
+                <i class="fas fa-info-circle"></i>
+                About Us
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Categories</div>
+            </div>
+            <a href="{% url 'sportsclub' %}" class="menu-item">
+                <i class="fas fa-running"></i>
+                Sports & Athletics
+            </a>
+            <a href="{% url 'artsclub' %}" class="menu-item">
+                <i class="fas fa-palette"></i>
+                Arts & Creativity
+            </a>
+            <a href="{% url 'musicclub' %}" class="menu-item">
+                <i class="fas fa-music"></i>
+                Music & Performance
+            </a>
+            <a href="{% url 'danceclub' %}" class="menu-item">
+                <i class="fas fa-users"></i>
+                Dance & Movement
+            </a>
+            <a href="{% url 'readingclub' %}" class="menu-item">
+                <i class="fas fa-book"></i>
+                Reading & Literature
+            </a>
+            <a href="{% url 'leadershipclub' %}" class="menu-item">
+                <i class="fas fa-crown"></i>
+                Leadership & Service
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+            </div>
+            <a href="#profile" class="menu-item">
+                <i class="fas fa-user"></i>
+                My Profile
+            </a>
+            <a href="#settings" class="menu-item">
+                <i class="fas fa-cog"></i>
+                Settings
+            </a>
+            <a href="{% url 'contact'%}" class="menu-item">
+                <i class="fas fa-envelope"></i>
+                Contact
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Appearance</div>
+            </div>
+            <button class="menu-item theme-toggle-menu" onclick="toggleTheme()">
+                <i class="fas fa-moon" id="theme-icon-sidebar"></i>
+                <span id="theme-text">Dark Mode</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo">
+                    <i class="fas fa-palette"></i>
+                    Consolatrix Campus
+                </a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Arts Hero Section -->
+    <section class="arts-hero">
+        <div class="hero-content-arts">
+            <h1>Arts & Creativity</h1>
+            <div class="subtitle">Where Imagination Comes to Life</div>
+            <p>Discover your artistic potential through our diverse range of creative clubs and activities. From traditional fine arts to cutting-edge digital design, we provide the space and community for every form of creative expression.</p>
+            
+            <div class="hero-cta">
+                <button class="hero-btn hero-btn-primary" onclick="document.getElementById('arts-grid').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fas fa-palette"></i>
+                    Explore Clubs
+                </button>
+                <a href="#" class="hero-btn hero-btn-secondary">
+                    <i class="fas fa-images"></i>
+                    View Gallery
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterArts('all')">All</button>
+                <button class="filter-btn" onclick="filterArts('visual-arts')">Visual Arts</button>
+                <button class="filter-btn" onclick="filterArts('digital-art')">Digital Art</button>
+                <button class="filter-btn" onclick="filterArts('photography')">Photography</button>
+                <button class="filter-btn" onclick="filterArts('crafts')">Crafts</button>
+                <button class="filter-btn" onclick="filterArts('drama')">Drama</button>
+            </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search arts clubs..." oninput="searchArts(this.value)">
+            </div>
+        </div>
+    </section>
+
+    <!-- Arts Grid Section -->
+    <section class="arts-section" id="arts-grid">
+        <div class="arts-container">
+            <div class="arts-grid" id="artsGrid">
+                <!-- Visual Arts Card -->
+                <div class="art-card" data-category="visual-arts">
+                    <div class="art-image visual-arts">
+                        <i class="fas fa-paint-brush"></i>
+                        <div class="art-badge">Popular</div>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Visual Arts Society</h3>
+                        <div class="art-category">Visual Arts</div>
+                        <p class="art-description">Express yourself through traditional and contemporary visual arts. Learn painting, drawing, sketching, and mixed media techniques in our fully equipped studio.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Mon & Wed 4-6 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                20-25 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">Painting</span>
+                            <span class="tag">Drawing</span>
+                            <span class="tag">Mixed Media</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Visual Arts Society')">
+                            <i class="fas fa-palette"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Drama Club Card -->
+                <div class="art-card" data-category="drama">
+                    <div class="art-image drama">
+                        <i class="fas fa-theater-masks"></i>
+                        <div class="art-badge">New</div>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Drama & Theater Club</h3>
+                        <div class="art-category">Performing Arts</div>
+                        <p class="art-description">Bring stories to life on stage! Develop your acting skills, participate in productions, and explore the world of theatrical performance and storytelling.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Tue & Thu 5-7 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                15-18 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">Acting</span>
+                            <span class="tag">Theater</span>
+                            <span class="tag">Performance</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Drama & Theater Club')">
+                            <i class="fas fa-theater-masks"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Photography Club Card -->
+                <div class="art-card" data-category="photography">
+                    <div class="art-image photography">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Photography Club</h3>
+                        <div class="art-category">Photography</div>
+                        <p class="art-description">Capture the world through your lens. Learn composition, lighting, and post-processing techniques. Participate in photo walks and exhibitions.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Sat 2-5 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                12-16 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">Portrait</span>
+                            <span class="tag">Landscape</span>
+                            <span class="tag">Street Photography</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Photography Club')">
+                            <i class="fas fa-camera"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Digital Art Card -->
+                <div class="art-card" data-category="digital-art">
+                    <div class="art-image digital-art">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Digital Art Studio</h3>
+                        <div class="art-category">Digital Art</div>
+                        <p class="art-description">Create stunning digital artwork using industry-standard software. Learn digital painting, concept art, and digital illustration techniques.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Wed & Fri 3-6 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                18-22 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">Digital Painting</span>
+                            <span class="tag">Concept Art</span>
+                            <span class="tag">Illustration</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Digital Art Studio')">
+                            <i class="fas fa-laptop"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sculpture Club Card -->
+                <div class="art-card" data-category="visual-arts">
+                    <div class="art-image sculpture">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Sculpture & 3D Arts</h3>
+                        <div class="art-category">Sculpture</div>
+                        <p class="art-description">Shape your ideas into reality. Work with clay, wood, metal, and modern materials to create three-dimensional art pieces.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Thu & Sat 2-5 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                10-14 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">Clay Modeling</span>
+                            <span class="tag">Wood Carving</span>
+                            <span class="tag">Metal Work</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Sculpture & 3D Arts')">
+                            <i class="fas fa-cube"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Graphic Design Card -->
+                <div class="art-card" data-category="digital-art">
+                    <div class="art-image graphic-design">
+                        <i class="fas fa-vector-square"></i>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Graphic Design Collective</h3>
+                        <div class="art-category">Graphic Design</div>
+                        <p class="art-description">Master the art of visual communication. Learn logo design, branding, typography, and layout design for print and digital media.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Mon & Fri 4-6 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                16-20 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">Logo Design</span>
+                            <span class="tag">Typography</span>
+                            <span class="tag">Branding</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Graphic Design Collective')">
+                            <i class="fas fa-vector-square"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Animation Club Card -->
+                <div class="art-card" data-category="digital-art">
+                    <div class="art-image animation">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Animation Workshop</h3>
+                        <div class="art-category">Animation</div>
+                        <p class="art-description">Bring your drawings to life! Learn 2D and 3D animation techniques, character design, and storytelling through motion.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Tue & Sat 3-6 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                12-15 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">2D Animation</span>
+                            <span class="tag">3D Modeling</span>
+                            <span class="tag">Character Design</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Animation Workshop')">
+                            <i class="fas fa-play-circle"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calligraphy Club Card -->
+                <div class="art-card" data-category="visual-arts">
+                    <div class="art-image calligraphy">
+                        <i class="fas fa-feather-alt"></i>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Calligraphy & Lettering</h3>
+                        <div class="art-category">Calligraphy</div>
+                        <p class="art-description">Master the art of beautiful writing. Learn traditional and modern calligraphy styles, hand lettering, and typography design.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Wed 4-6 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                8-12 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">Traditional</span>
+                            <span class="tag">Modern</span>
+                            <span class="tag">Hand Lettering</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Calligraphy & Lettering')">
+                            <i class="fas fa-feather-alt"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Crafts Club Card -->
+                <div class="art-card" data-category="crafts">
+                    <div class="art-image crafts">
+                        <i class="fas fa-cut"></i>
+                    </div>
+                    <div class="art-content">
+                        <h3 class="art-title">Arts & Crafts Society</h3>
+                        <div class="art-category">Crafts</div>
+                        <p class="art-description">Create beautiful handmade items using various craft techniques. From jewelry making to paper crafts and textile arts.</p>
+                        
+                        <div class="art-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                Fri 3-5 PM
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                14-18 Members
+                            </div>
+                        </div>
+                        
+                        <div class="art-tags">
+                            <span class="tag">Jewelry</span>
+                            <span class="tag">Paper Crafts</span>
+                            <span class="tag">Textile Arts</span>
+                        </div>
+                        
+                        <button class="apply-btn" onclick="openModal('Arts & Crafts Society')">
+                            <i class="fas fa-cut"></i>
+                            Join Club
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Join Arts Club</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="applicationForm">
+                    <div class="form-group">
+                        <label for="studentName">Full Name</label>
+                        <input type="text" id="studentName" name="studentName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentEmail">Email Address</label>
+                        <input type="email" id="studentEmail" name="studentEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId" name="studentId" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="yearLevel">Year Level</label>
+                        <select id="yearLevel" name="yearLevel" required>
+                            <option value="">Select Year Level</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="experience">Previous Experience</label>
+                        <textarea id="experience" name="experience" placeholder="Tell us about any relevant experience or why you're interested in joining this club..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        Submit Application
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Consolatrix Campus Club. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                themeIconSidebar.className = 'fas fa-moon';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                themeIconSidebar.className = 'fas fa-sun';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Sidebar Functionality
+        function openSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        // Filter Functionality
+        function filterArts(category) {
+            const cards = document.querySelectorAll('.art-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter cards
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Search Functionality
+        function searchArts(query) {
+            const cards = document.querySelectorAll('.art-card');
+            query = query.toLowerCase();
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.art-title').textContent.toLowerCase();
+                const category = card.querySelector('.art-category').textContent.toLowerCase();
+                const description = card.querySelector('.art-description').textContent.toLowerCase();
+                const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+                
+                if (title.includes(query) || category.includes(query) || description.includes(query) || 
+                    tags.some(tag => tag.includes(query))) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Modal Functionality
+        function openModal(clubName) {
+            const modal = document.getElementById('applicationModal');
+            const modalTitle = document.getElementById('modalTitle');
+            modalTitle.textContent = `Join ${clubName}`;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('applicationModal');
+            modal.classList.remove('active');
+        }
+
+        // Form Submission
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            alert('Application submitted successfully! We will contact you soon.');
+            closeModal();
+            this.reset();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('applicationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>

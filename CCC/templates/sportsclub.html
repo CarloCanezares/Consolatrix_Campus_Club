@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports & Athletics - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --dark-navy: #020617;
+            --light-navy: #334155;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --accent-yellow: #fbbf24;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --primary-navy: #1e40af;
+            --secondary-navy: #3b82f6;
+            --light-navy: #60a5fa;
+            --accent-orange: #fb923c;
+            --accent-red: #f87171;
+            --accent-yellow: #fcd34d;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-navy);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-navy);
+            background: var(--dark-navy);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-orange);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle-menu {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-family: inherit;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .theme-toggle-menu:hover {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-orange);
+        }
+
+        .theme-toggle-menu span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--secondary-navy);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--secondary-navy);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-navy);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--light-navy);
+            transform: scale(1.1);
+        }
+
+        /* Sports Hero */
+        .sports-hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-red) 100%);
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+
+        .sports-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+        }
+
+        .sports-hero::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            top: -150px;
+            right: -150px;
+            animation: sportsFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes sportsFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+
+        .hero-content-sports {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content-sports h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content-sports .subtitle {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 1);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero-content-sports p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .hero-btn {
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hero-btn-primary {
+            background: white;
+            color: var(--accent-orange);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-secondary);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-orange);
+            color: white;
+            border-color: var(--accent-orange);
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--border-color);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            flex: 1;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .search-box i {
+            color: var(--text-light);
+        }
+
+        /* Sports Grid */
+        .sports-section {
+            padding: 4rem 0;
+            background: var(--bg-primary);
+        }
+
+        .sports-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .sports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .sport-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .sport-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .sport-card:hover::before {
+            opacity: 1;
+        }
+
+        .sport-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(249, 115, 22, 0.25);
+            border-color: rgba(249, 115, 22, 0.3);
+        }
+
+        .sport-image {
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sport-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: sportShimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes sportShimmer {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(20px, 20px) rotate(10deg); }
+        }
+
+        .sport-image.basketball {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        }
+
+        .sport-image.volleyball {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .sport-image.track {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .sport-image.badminton {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .sport-image.tabletennis {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .sport-image.chess {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        }
+
+        .sport-image.checkers {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        }
+
+        .sport-image.scrabble {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .sport-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+        }
+
+        .sport-content {
+            padding: 2.5rem;
+        }
+
+        .sport-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .sport-category {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-red) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sport-description {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1.75rem;
+            font-size: 0.95rem;
+        }
+
+        .sport-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .info-item i {
+            color: var(--accent-orange);
+        }
+
+        .sport-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            border: 1px solid rgba(249, 115, 22, 0.2);
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-red) 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(249, 115, 22, 0.5);
+            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-red) 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-red) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-navy);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content-sports h1 {
+                font-size: 2.5rem;
+            }
+
+            .sports-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                Consolatrix Campus
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a href="{% url 'index' %}" class="menu-item active">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="#clubs" class="menu-item">
+                <i class="fas fa-users"></i>
+                Browse Clubs
+            </a>
+            <a href="#events" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="#about" class="menu-item">
+                <i class="fas fa-info-circle"></i>
+                About Us
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Categories</div>
+                <a href="{% url 'sportsclub' %}" class="menu-item">
+                    <i class="fas fa-running"></i>
+                    Sports & Athletics
+                </a>
+                <a href="{% url 'artsclub' %}" class="menu-item">
+                    <i class="fas fa-palette"></i>
+                    Arts & Creativity
+                </a>
+                <a href="{% url 'musicclub' %}" class="menu-item">
+                    <i class="fas fa-music"></i>
+                    Music & Performance
+                </a>
+                <a href="{% url 'danceclub' %}" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    Dance & Movement
+                </a>
+                <a href="{% url 'readingclub' %}" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Reading & Literature
+                </a>
+                <a href="{% url 'leadershipclub' %}" class="menu-item">
+                    <i class="fas fa-crown"></i>
+                    Leadership & Service
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+            </div>
+            <a href="#profile" class="menu-item">
+                <i class="fas fa-user"></i>
+                My Profile
+            </a>
+            <a href="#settings" class="menu-item">
+                <i class="fas fa-cog"></i>
+                Settings
+            </a>
+            <a href="{% url 'contact'%}" class="menu-item">
+                <i class="fas fa-envelope"></i>
+                Contact
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Appearance</div>
+            </div>
+            <button class="menu-item theme-toggle-menu" onclick="toggleTheme()">
+                <i class="fas fa-moon" id="theme-icon-sidebar"></i>
+                <span id="theme-text">Dark Mode</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo">
+                    <i class="fas fa-running"></i>
+                    Sports & Athletics
+                </a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sports Hero -->
+    <section class="sports-hero">
+        <div class="hero-content-sports">
+            <h1>Sports & Athletics</h1>
+            <p class="subtitle">Where Champions Are Made</p>
+            <p>Join our dynamic sports programs and be part of a winning team. Build your athletic skills, make lifelong friendships, and represent Consolatrix Campus with pride through physical fitness and strategy games!</p>
+            
+            <div class="hero-cta">
+                <button class="hero-btn hero-btn-primary" onclick="document.getElementById('sportsGrid').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fas fa-running"></i>
+                    Explore Sports
+                </button>
+                <a href="#" class="hero-btn hero-btn-secondary">
+                    <i class="fas fa-trophy"></i>
+                    View Schedule
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Sports</button>
+                <button class="filter-btn" data-filter="team">Team Sports</button>
+                <button class="filter-btn" data-filter="individual">Individual</button>
+                <button class="filter-btn" data-filter="strategy">Strategy Games</button>
+                <button class="filter-btn" data-filter="indoor">Indoor</button>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search sports...">
+            </div>
+        </div>
+    </section>
+
+    <!-- Sports Grid -->
+    <section class="sports-section">
+        <div class="sports-container">
+            <div class="sports-grid" id="sportsGrid">
+                <!-- Basketball -->
+                <div class="sport-card" data-category="team indoor">
+                    <div class="sport-image basketball">
+                        🏀
+                        <span class="sport-badge">Open Slots: 5</span>
+                    </div>
+                    <div class="sport-content">
+                        <h3 class="sport-title">Basketball</h3>
+                        <p class="sport-category">Team Sport • Indoor</p>
+                        <p class="sport-description">Join our basketball team and develop your skills on the court. We compete in inter-school tournaments and focus on teamwork, strategy, and individual skill development.</p>
+                        
+                        <div class="sport-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Wed, Fri • 4-6 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-15 players</span>
+                            </div>
+                        </div>
+
+                        <div class="sport-tags">
+                            <span class="tag">Varsity Team</span>
+                            <span class="tag">All Levels</span>
+                            <span class="tag">Competitive</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Basketball')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Volleyball -->
+                <div class="sport-card" data-category="team indoor">
+                    <div class="sport-image volleyball">
+                        🏐
+                        <span class="sport-badge">Open Slots: 8</span>
+                    </div>
+                    <div class="sport-content">
+                        <h3 class="sport-title">Volleyball</h3>
+                        <p class="sport-category">Team Sport • Indoor</p>
+                        <p class="sport-description">Spike, set, and serve your way to victory! Our volleyball team emphasizes coordination, agility, and team spirit in every match.</p>
+                        
+                        <div class="sport-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Tue, Thu • 3:30-5:30 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>10-12 players</span>
+                            </div>
+                        </div>
+
+                        <div class="sport-tags">
+                            <span class="tag">Men's & Women's</span>
+                            <span class="tag">Tournament Ready</span>
+                            <span class="tag">Beginner Friendly</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Volleyball')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Track & Field -->
+                <div class="sport-card" data-category="individual outdoor">
+                    <div class="sport-image track">
+                        🏃
+                        <span class="sport-badge">Open Slots: 10</span>
+                    </div>
+                    <div class="sport-content">
+                        <h3 class="sport-title">Track & Field</h3>
+                        <p class="sport-category">Individual Sport • Outdoor</p>
+                        <p class="sport-description">Run, jump, and throw your way to excellence! Track and field offers multiple events for sprinters, distance runners, jumpers, and throwers.</p>
+                        
+                        <div class="sport-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon-Fri • 5-7 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>15-20 athletes</span>
+                            </div>
+                        </div>
+
+                        <div class="sport-tags">
+                            <span class="tag">Multiple Events</span>
+                            <span class="tag">Personal Records</span>
+                            <span class="tag">Regional Meets</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Track & Field')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Badminton -->
+                <div class="sport-card" data-category="individual indoor">
+                    <div class="sport-image badminton">
+                        🏸
+                        <span class="sport-badge">Open Slots: 7</span>
+                    </div>
+                    <div class="sport-content">
+                        <h3 class="sport-title">Badminton</h3>
+                        <p class="sport-category">Individual Sport • Indoor</p>
+                        <p class="sport-description">Fast-paced rallies and strategic gameplay! Improve your reflexes and footwork in this exciting racket sport.</p>
+                        
+                        <div class="sport-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Thu • 3-5 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>10-14 players</span>
+                            </div>
+                        </div>
+
+                        <div class="sport-tags">
+                            <span class="tag">Quick Reflexes</span>
+                            <span class="tag">Strategy Focused</span>
+                            <span class="tag">Fun & Competitive</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Badminton')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table Tennis -->
+                <div class="sport-card" data-category="individual indoor">
+                    <div class="sport-image tabletennis">
+                        🏓
+                        <span class="sport-badge">Open Slots: 8</span>
+                    </div>
+                    <div class="sport-content">
+                        <h3 class="sport-title">Table Tennis</h3>
+                        <p class="sport-category">Individual Sport • Indoor</p>
+                        <p class="sport-description">Lightning-fast reflexes meet precision control! Develop spin techniques, serves, and rally strategies in competitive table tennis.</p>
+                        
+                        <div class="sport-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Daily • 12-2 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-16 players</span>
+                            </div>
+                        </div>
+
+                        <div class="sport-tags">
+                            <span class="tag">Multiple Tables</span>
+                            <span class="tag">Tournaments</span>
+                            <span class="tag">All Skill Levels</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Table Tennis')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chess -->
+                <div class="sport-card" data-category="strategy indoor individual">
+                    <div class="sport-image chess">
+                        ♟️
+                        <span class="sport-badge">Open Slots: 12</span>
+                    </div>
+                    <div class="sport-content">
+                        <h3 class="sport-title">Chess Club</h3>
+                        <p class="sport-category">Strategy Game • Indoor</p>
+                        <p class="sport-description">Master the game of kings! Develop critical thinking, strategy, and foresight through competitive chess. Learn openings, tactics, and endgame techniques.</p>
+                        
+                        <div class="sport-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Wed, Fri • 3-5 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>15-20 members</span>
+                            </div>
+                        </div>
+
+                        <div class="sport-tags">
+                            <span class="tag">Strategic Thinking</span>
+                            <span class="tag">Tournaments</span>
+                            <span class="tag">All Levels Welcome</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Chess Club')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Checkers -->
+                <div class="sport-card" data-category="strategy indoor individual">
+                    <div class="sport-image checkers">
+                        ⚫
+                        <span class="sport-badge">Open Slots: 10</span>
+                    </div>
+                    <div class="sport-content">
+                        <h3 class="sport-title">Checkers Club</h3>
+                        <p class="sport-category">Strategy Game • Indoor</p>
+                        <p class="sport-description">Simple rules, complex strategy! Engage in tactical gameplay where every move counts. Perfect for developing strategic planning and pattern recognition skills.</p>
+                        
+                        <div class="sport-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Tue, Thu • 2-4 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-18 members</span>
+                            </div>
+                        </div>
+
+                        <div class="sport-tags">
+                            <span class="tag">Easy to Learn</span>
+                            <span class="tag">Tactical Play</span>
+                            <span class="tag">Friendly Competition</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Checkers Club')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scrabble -->
+                <div class="sport-card" data-category="strategy indoor individual">
+                    <div class="sport-image scrabble">
+                        🔤
+                        <span class="sport-badge">Open Slots: 8</span>
+                    </div>
+                    <div class="sport-content">
+                        <h3 class="sport-title">Scrabble Club</h3>
+                        <p class="sport-category">Strategy Game • Indoor</p>
+                        <p class="sport-description">Challenge your vocabulary and strategic word placement! Expand your lexicon while competing in word-building battles. Perfect for language enthusiasts and tactical thinkers.</p>
+                        
+                        <div class="sport-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Wed • 4-6 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>8-12 members</span>
+                            </div>
+                        </div>
+
+                        <div class="sport-tags">
+                            <span class="tag">Vocabulary Builder</span>
+                            <span class="tag">Word Strategy</span>
+                            <span class="tag">Competitive Play</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Scrabble Club')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2 id="modalTitle">Apply for Sport</h2>
+                <p>Fill out the form below to join our team</p>
+            </div>
+            <div class="modal-body">
+                <form id="applicationForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentId">Student ID *</label>
+                        <input type="text" id="studentId" required placeholder="e.g., 2024-12345">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" required placeholder="your.email@consolatrix.edu">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Contact Number *</label>
+                        <input type="tel" id="phone" required placeholder="+63 912 345 6789">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yearLevel">Year Level *</label>
+                        <select id="yearLevel" required>
+                            <option value="">Select your year level</option>
+                            <option value="1st">1st Year</option>
+                            <option value="2nd">2nd Year</option>
+                            <option value="3rd">3rd Year</option>
+                            <option value="4th">4th Year</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience">Experience Level *</label>
+                        <select id="experience" required>
+                            <option value="">Select your experience</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="varsity">Varsity Experience</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whyJoin">Why do you want to join? *</label>
+                        <textarea id="whyJoin" required placeholder="Tell us about your passion and what you hope to achieve..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availability">Available Practice Times *</label>
+                        <textarea id="availability" required placeholder="List your available days and times for practice..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check-circle"></i>
+                        Submit Application
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Consolatrix Campus Club - Sports & Athletics Division</p>
+        <p>Building champions on and off the field!</p>
+    </footer>
+
+    <script>
+        let selectedSport = '';
+
+        // Sidebar Functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                themeIconSidebar.className = 'fas fa-moon';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                themeIconSidebar.className = 'fas fa-sun';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Modal Functions
+        function openModal(sportName) {
+            selectedSport = sportName;
+            document.getElementById('modalTitle').textContent = `Apply for ${sportName}`;
+            document.getElementById('applicationModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('applicationModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            document.getElementById('applicationForm').reset();
+        }
+
+        // Filter Functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const sportCards = document.querySelectorAll('.sport-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                sportCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const category = card.getAttribute('data-category');
+                        if (category.includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            sportCards.forEach(card => {
+                const title = card.querySelector('.sport-title').textContent.toLowerCase();
+                const description = card.querySelector('.sport-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Form Submission
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                sport: selectedSport,
+                fullName: document.getElementById('fullName').value,
+                studentId: document.getElementById('studentId').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                yearLevel: document.getElementById('yearLevel').value,
+                experience: document.getElementById('experience').value,
+                whyJoin: document.getElementById('whyJoin').value,
+                availability: document.getElementById('availability').value
+            };
+            
+            console.log('Application submitted:', formData);
+            
+            alert(`Application submitted successfully for ${selectedSport}!\n\nWe'll review your application and contact you within 3-5 business days. Check your email for updates!`);
+            
+            closeModal();
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+                closeModal();
+            }
+        });
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>

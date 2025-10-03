@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Clubs - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --dark-navy: #020617;
+            --light-navy: #334155;
+            --accent-gold: #fbbf24;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --sidebar-width: 280px;
+            
+            /* Club Colors */
+            --dance-blue: #0ea5e9;
+            --leadership-green: #10b981;
+            --sports-orange: #f97316;
+            --music-yellow: #fbbf24;
+            --reading-burgundy: #991b1b;
+            --arts-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #3b82f6 75%, #fbbf24 100%);
+        }
+
+        [data-theme="dark"] {
+            --primary-navy: #1e40af;
+            --secondary-navy: #3b82f6;
+            --light-navy: #60a5fa;
+            --accent-gold: #fcd34d;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-navy);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-navy);
+            background: var(--dark-navy);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-gold);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle-menu {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .theme-toggle-menu span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--secondary-navy);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--secondary-navy);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-navy);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--light-navy);
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .clubs-hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+
+        .clubs-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Clubs Grid Section */
+        .clubs-section {
+            padding: 5rem 0;
+            background: var(--bg-primary);
+        }
+
+        .clubs-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .clubs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .club-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .club-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .club-header {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .club-header.sports {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+        }
+
+        .club-header.arts {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #3b82f6 75%, #fbbf24 100%);
+        }
+
+        .club-header.music {
+            background: linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%);
+        }
+
+        .club-header.dance {
+            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+        }
+
+        .club-header.reading {
+            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+        }
+
+        .club-header.leadership {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        }
+
+        .club-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: shimmer 8s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
+            50% { transform: translate(20px, 20px) rotate(180deg); opacity: 0.8; }
+        }
+
+        .club-icon {
+            font-size: 5rem;
+            color: white;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .club-body {
+            padding: 2rem;
+        }
+
+        .club-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .club-category {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .club-category.sports { color: #f97316; }
+        .club-category.arts { 
+            background: linear-gradient(90deg, #8b5cf6, #ec4899, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .club-category.music { color: #fbbf24; }
+        .club-category.dance { color: #0ea5e9; }
+        .club-category.reading { color: #991b1b; }
+        .club-category.leadership { color: #10b981; }
+
+        .club-description {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .club-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .explore-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .explore-btn.sports {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .explore-btn.sports:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+        }
+
+        .explore-btn.arts {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #3b82f6 75%, #fbbf24 100%);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .explore-btn.arts:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .explore-btn.music {
+            background: linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%);
+            color: var(--dark-navy);
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+
+        .explore-btn.music:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+        }
+
+        .explore-btn.dance {
+            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .explore-btn.dance:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+        }
+
+        .explore-btn.reading {
+            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+            box-shadow: 0 4px 15px rgba(153, 27, 27, 0.3);
+        }
+
+        .explore-btn.reading:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(153, 27, 27, 0.4);
+        }
+
+        .explore-btn.leadership {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .explore-btn.leadership:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-navy);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .clubs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'home' %}" class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                Consolatrix Campus
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a href="{% url 'home' %}" class="menu-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="{% url 'clubs' %}" class="menu-item active">
+                <i class="fas fa-users"></i>
+                Browse Clubs
+            </a>
+            <a href="{% url 'events' %}" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="{% url 'aboutus' %}" class="menu-item">
+                <i class="fas fa-info-circle"></i>
+                About Us
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Categories</div>
+                <a href="{% url 'sportsclub' %}" class="menu-item">
+                    <i class="fas fa-running"></i>
+                    Sports & Athletics
+                </a>
+                <a href="{% url 'artsclub' %}" class="menu-item">
+                    <i class="fas fa-palette"></i>
+                    Arts & Creativity
+                </a>
+                <a href="{% url 'musicclub' %}" class="menu-item">
+                    <i class="fas fa-music"></i>
+                    Music & Performance
+                </a>
+                <a href="{% url 'danceclub' %}" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    Dance & Movement
+                </a>
+                <a href="{% url 'readingclub' %}" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Reading & Literature
+                </a>
+                <a href="{% url 'leadershipclub' %}" class="menu-item">
+                    <i class="fas fa-crown"></i>
+                    Leadership & Service
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+                <a href="#profile" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+                <a href="#settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="#contact" class="menu-item">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">Appearance</div>
+                <button class="menu-item theme-toggle-menu" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon-sidebar"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="{% url 'home' %}" class="logo">
+                    <i class="fas fa-users"></i>
+                    Consolatrix Campus
+                </a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="clubs-hero">
+        <div class="hero-content">
+            <h1>Explore All Clubs</h1>
+            <p>Discover the perfect club for you! Browse through our diverse range of student organizations across sports, arts, music, dance, literature, and leadership.</p>
+        </div>
+    </section>
+
+    <!-- Clubs Grid -->
+    <section class="clubs-section">
+        <div class="clubs-container">
+            <h2 class="section-title">Featured Club Categories</h2>
+            <p class="section-subtitle">Find your community and start your journey of growth, connection, and excellence</p>
+
+            <div class="clubs-grid">
+                <!-- Sports & Athletics -->
+                <div class="club-card">
+                    <div class="club-header sports">
+                        <div class="club-icon">
+                            <i class="fas fa-running"></i>
+                        </div>
+                    </div>
+                    <div class="club-body">
+                        <h3 class="club-title">Sports & Athletics</h3>
+                        <p class="club-category sports">Physical Excellence</p>
+                        <p class="club-description">
+                            Push your limits and discover your athletic potential. Join competitive teams in basketball, volleyball, track & field, and more sports that build character and teamwork.
+                        </p>
+                        <div class="club-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>Competitive Teams</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-medal"></i>
+                                <span>Championships</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'sportsclub' %}" class="explore-btn sports">
+                            <i class="fas fa-arrow-right"></i>
+                            Explore Sports Clubs
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Arts & Creativity -->
+                <div class="club-card">
+                    <div class="club-header arts">
+                        <div class="club-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                    </div>
+                    <div class="club-body">
+                        <h3 class="club-title">Arts & Creativity</h3>
+                        <p class="club-category arts">Creative Expression</p>
+                        <p class="club-description">
+                            Unleash your creativity through visual arts, drama, photography, and design. Express yourself through multiple mediums and discover your artistic voice.
+                        </p>
+                        <div class="club-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-paint-brush"></i>
+                                <span>Multiple Mediums</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-camera"></i>
+                                <span>Exhibitions</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'artsclub' %}" class="explore-btn arts">
+                            <i class="fas fa-arrow-right"></i>
+                            Explore Arts Clubs
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Music & Performance -->
+                <div class="club-card">
+                    <div class="club-header music">
+                        <div class="club-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                    </div>
+                    <div class="club-body">
+                        <h3 class="club-title">Music & Performance</h3>
+                        <p class="club-category music">Musical Harmony</p>
+                        <p class="club-description">
+                            Find your rhythm and voice! Join choir, band, worship team, or learn instruments. From classical to contemporary, express yourself through music.
+                        </p>
+                        <div class="club-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-microphone"></i>
+                                <span>Live Performances</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-guitar"></i>
+                                <span>Multiple Ensembles</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'musicclub' %}" class="explore-btn music">
+                            <i class="fas fa-arrow-right"></i>
+                            Explore Music Clubs
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Dance & Movement -->
+                <div class="club-card">
+                    <div class="club-header dance">
+                        <div class="club-icon">
+                            💃
+                        </div>
+                    </div>
+                    <div class="club-body">
+                        <h3 class="club-title">Dance & Movement</h3>
+                        <p class="club-category dance">Rhythmic Expression</p>
+                        <p class="club-description">
+                            Express yourself through movement! From contemporary to hip-hop, ballet to cultural dances, discover the joy of dance and connect with your rhythm.
+                        </p>
+                        <div class="club-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Multiple Styles</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-star"></i>
+                                <span>Performances</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'danceclub' %}" class="explore-btn dance">
+                            <i class="fas fa-arrow-right"></i>
+                            Explore Dance Clubs
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Reading & Literature -->
+                <div class="club-card">
+                    <div class="club-header reading">
+                        <div class="club-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    </div>
+                    <div class="club-body">
+                        <h3 class="club-title">Reading & Literature</h3>
+                        <p class="club-category reading">Literary Excellence</p>
+                        <p class="club-description">
+                            Immerse yourself in the world of books and writing. From book clubs to creative writing, journalism to poetry, discover the power of words.
+                        </p>
+                        <div class="club-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-book-open"></i>
+                                <span>Book Discussions</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-pen"></i>
+                                <span>Writing Workshops</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'readingclub' %}" class="explore-btn reading">
+                            <i class="fas fa-arrow-right"></i>
+                            Explore Literature Clubs
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Leadership & Service -->
+                <div class="club-card">
+                    <div class="club-header leadership">
+                        <div class="club-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                    </div>
+                    <div class="club-body">
+                        <h3 class="club-title">Leadership & Service</h3>
+                        <p class="club-category leadership">Community Impact</p>
+                        <p class="club-description">
+                            Develop leadership skills and make a difference! Join student government, community service projects, and initiatives that create positive change.
+                        </p>
+                        <div class="club-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-hands-helping"></i>
+                                <span>Service Projects</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Leadership Training</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'leadershipclub' %}" class="explore-btn leadership">
+                            <i class="fas fa-arrow-right"></i>
+                            Explore Leadership Clubs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Consolatrix Campus Club - ARSC Christ-Centered School Community</p>
+        <p>Find your community and grow together!</p>
+    </footer>
+
+    <script>
+        // Sidebar Functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                themeIconSidebar.className = 'fas fa-moon';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                themeIconSidebar.className = 'fas fa-sun';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            const cards = document.querySelectorAll('.club-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --dark-navy: #020617;
+            --light-navy: #334155;
+            --accent-gold: #fbbf24;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+            --accent-red: #ef4444;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --primary-navy: #1e40af;
+            --secondary-navy: #3b82f6;
+            --light-navy: #60a5fa;
+            --accent-gold: #fcd34d;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-navy);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-navy);
+            background: var(--dark-navy);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-gold);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle-menu {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .theme-toggle-menu span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--secondary-navy);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--secondary-navy);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-navy);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--light-navy);
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .about-hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Mission Section */
+        .mission-section {
+            padding: 5rem 0;
+            background: var(--bg-primary);
+        }
+
+        .mission-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .mission-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mission-content p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .mission-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mission-image {
+            width: 100%;
+            max-width: 400px;
+            height: 350px;
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--primary-navy) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 5rem;
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.6; }
+        }
+
+        /* Values Section */
+        .values-section {
+            padding: 5rem 0;
+            background: var(--bg-secondary);
+        }
+
+        .values-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .value-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            transition: left 0.5s ease;
+        }
+
+        .value-card.faith::before {
+            background: linear-gradient(90deg, var(--accent-gold), #f59e0b);
+        }
+
+        .value-card.excellence::before {
+            background: linear-gradient(90deg, var(--accent-blue), #2563eb);
+        }
+
+        .value-card.community::before {
+            background: linear-gradient(90deg, var(--accent-green), #059669);
+        }
+
+        .value-card.growth::before {
+            background: linear-gradient(90deg, var(--accent-purple), #7c3aed);
+        }
+
+        .value-card.service::before {
+            background: linear-gradient(90deg, var(--accent-red), #dc2626);
+        }
+
+        .value-card.integrity::before {
+            background: linear-gradient(90deg, var(--primary-navy), var(--secondary-navy));
+        }
+
+        .value-card:hover::before {
+            left: 0;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .value-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .value-card.faith .value-icon { color: var(--accent-gold); }
+        .value-card.excellence .value-icon { color: var(--accent-blue); }
+        .value-card.community .value-icon { color: var(--accent-green); }
+        .value-card.growth .value-icon { color: var(--accent-purple); }
+        .value-card.service .value-icon { color: var(--accent-red); }
+        .value-card.integrity .value-icon { color: var(--primary-navy); }
+
+        .value-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .value-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 5rem 0;
+            background: var(--bg-primary);
+        }
+
+        .team-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .team-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-header {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .team-body {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .team-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .team-role {
+            color: var(--accent-green);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .team-description {
+            color: var(--text-light);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+            color: white;
+        }
+
+        .stats-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        /* History Section */
+        .history-section {
+            padding: 5rem 0;
+            background: var(--bg-primary);
+        }
+
+        .history-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .history-timeline {
+            position: relative;
+            margin-top: 3rem;
+        }
+
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--accent-green) 0%, var(--accent-blue) 50%, var(--accent-purple) 100%);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.3);
+            flex-shrink: 0;
+        }
+
+        .timeline-item:nth-child(1) .timeline-icon {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #f59e0b 100%);
+        }
+
+        .timeline-item:nth-child(2) .timeline-icon {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+        }
+
+        .timeline-item:nth-child(3) .timeline-icon {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
+        }
+
+        .timeline-item:nth-child(4) .timeline-icon {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #2563eb 100%);
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 0 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border: 15px solid transparent;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            left: -30px;
+            border-right-color: var(--card-bg);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            right: -30px;
+            border-left-color: var(--card-bg);
+        }
+
+        .timeline-content h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .timeline-content p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Vision Section */
+        .vision-section {
+            padding: 5rem 0;
+            background: var(--bg-secondary);
+        }
+
+        .vision-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .vision-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .vision-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .vision-image {
+            width: 100%;
+            max-width: 400px;
+            height: 350px;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 5rem;
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: float 12s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(10px, -10px) rotate(90deg); }
+            50% { transform: translate(-5px, 5px) rotate(180deg); }
+            75% { transform: translate(-10px, -5px) rotate(270deg); }
+        }
+
+        .vision-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .vision-content p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .vision-highlights {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-item i {
+            font-size: 1.2rem;
+            color: var(--accent-purple);
+            width: 20px;
+        }
+
+        .highlight-item:nth-child(2) i { color: var(--accent-green); }
+        .highlight-item:nth-child(3) i { color: var(--accent-gold); }
+        .highlight-item:nth-child(4) i { color: var(--accent-blue); }
+
+        .highlight-item span {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .footer {
+            background: var(--primary-navy);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .mission-grid, .vision-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .history-timeline::before {
+                left: 40px;
+            }
+
+            .timeline-item {
+                flex-direction: row !important;
+            }
+
+            .timeline-item:nth-child(even) .timeline-content::before {
+                left: -30px;
+                right: auto;
+                border-left-color: transparent;
+                border-right-color: var(--card-bg);
+            }
+
+            .timeline-icon {
+                margin-left: 0;
+                margin-right: 2rem;
+            }
+
+            .timeline-content {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .timeline-content {
+                padding: 1.5rem;
+            }
+
+            .highlight-item {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Footer */
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                Consolatrix Campus
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a href="{% url 'home'%}" class="menu-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="{% url 'clubs'%}" class="menu-item">
+                <i class="fas fa-users"></i>
+                Browse Clubs
+            </a>
+            <a href="{% url 'events'%}" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="{% url 'aboutus'%}" class="menu-item active">
+                <i class="fas fa-info-circle"></i>
+                About Us
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Categories</div>
+                <a href="{% url 'sportsclub' %}" class="menu-item">
+                    <i class="fas fa-running"></i>
+                    Sports & Athletics
+                </a>
+                <a href="{% url 'artsclub' %}" class="menu-item">
+                    <i class="fas fa-palette"></i>
+                    Arts & Creativity
+                </a>
+                <a href="{% url 'musicclub' %}" class="menu-item">
+                    <i class="fas fa-music"></i>
+                    Music & Performance
+                </a>
+                <a href="{% url 'danceclub' %}" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    Dance & Movement
+                </a>
+                <a href="{% url 'readingclub' %}" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Reading & Literature
+                </a>
+                <a href="{% url 'leadershipclub' %}" class="menu-item">
+                    <i class="fas fa-crown"></i>
+                    Leadership & Service
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+                <a href="#profile" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+                <a href="#settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="{% url 'contact'%}" class="menu-item">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">Appearance</div>
+                <button class="menu-item theme-toggle-menu" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon-sidebar"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo">
+                    <i class="fas fa-info-circle"></i>
+                    About Us
+                </a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="hero-content">
+            <h1>About Our Community</h1>
+            <p>Learn about the heart and mission behind Consolatrix Campus Club. We are a Christ-centered community dedicated to nurturing student growth through faith, excellence, and meaningful connections across diverse interests and talents.</p>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="mission-container">
+            <div class="mission-grid">
+                <div class="mission-content">
+                    <h2>Our Mission</h2>
+                    <p>
+                        At Consolatrix Campus Club, we believe every student has unique gifts waiting to be discovered and developed. Our mission is to provide a nurturing, Christ-centered environment where students can explore their passions, develop their talents, and grow into confident, responsible leaders.
+                    </p>
+                    <p>
+                        Through our diverse range of clubs and activities, we create opportunities for students to connect with like-minded peers, learn from experienced mentors, and contribute meaningfully to their school and broader community.
+                    </p>
+                    <p>
+                        We are committed to fostering an atmosphere of respect, inclusivity, and spiritual growth, where every member feels valued and empowered to reach their full potential while serving others with love and compassion.
+                    </p>
+                </div>
+                <div class="mission-visual">
+                    <div class="mission-image">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="values-container">
+            <h2 class="section-title">Our Core Values</h2>
+            <p class="section-subtitle">These fundamental principles guide everything we do and shape our community culture</p>
+
+            <div class="values-grid">
+                <div class="value-card faith">
+                    <div class="value-icon">
+                        <i class="fas fa-cross"></i>
+                    </div>
+                    <h3>Faith-Centered</h3>
+                    <p>We ground all our activities in Christian values, encouraging spiritual growth and character development alongside skill building and academic achievement.</p>
+                </div>
+
+                <div class="value-card excellence">
+                    <div class="value-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>Excellence</h3>
+                    <p>We strive for excellence in everything we do, encouraging students to give their best effort and continuously improve their skills and knowledge.</p>
+                </div>
+
+                <div class="value-card community">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community</h3>
+                    <p>We foster strong relationships and collaborative spirit, creating a supportive environment where every member feels they belong and can contribute.</p>
+                </div>
+
+                <div class="value-card growth">
+                    <div class="value-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Personal Growth</h3>
+                    <p>We provide opportunities for students to discover their talents, develop new skills, and build confidence through diverse activities and challenges.</p>
+                </div>
+
+                <div class="value-card service">
+                    <div class="value-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>Service</h3>
+                    <p>We encourage students to use their gifts in service to others, fostering a spirit of generosity and social responsibility within our community.</p>
+                </div>
+
+                <div class="value-card integrity">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Integrity</h3>
+                    <p>We uphold honesty, respect, and ethical behavior in all interactions, building trust and creating a safe space for everyone to learn and grow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Club Categories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Campus Community</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2024</div>
+                    <div class="stat-label">Year Founded</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Faith-Centered</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section class="history-section">
+        <div class="history-container">
+            <h2 class="section-title">Our Story</h2>
+            <p class="section-subtitle">Learn about the vision and journey behind Consolatrix Campus Club</p>
+
+            <div class="history-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>The Vision</h3>
+                        <p>Recognizing the need for a holistic approach to student development, the vision for Consolatrix Campus Club was born. We saw the opportunity to create a community where academic excellence meets spiritual growth, where talents are discovered and nurtured in a Christ-centered environment.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-hands-praying"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Foundation in Faith</h3>
+                        <p>Built on the solid foundation of Christian values, our community emphasizes the importance of character development alongside skill building. We believe that true education encompasses not just academic knowledge, but the formation of the whole person.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Growing Together</h3>
+                        <p>As we launch this initiative, we're excited to welcome our first cohort of students who will help shape the culture and traditions of our community. Every member plays a vital role in defining what Consolatrix Campus Club will become.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Looking Forward</h3>
+                        <p>Our future is bright with possibilities. We envision a thriving community where students from all backgrounds come together to explore their passions, serve others, and grow in wisdom, knowledge, and faith.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="vision-section">
+        <div class="vision-container">
+            <div class="vision-grid">
+                <div class="vision-visual">
+                    <div class="vision-image">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                </div>
+                <div class="vision-content">
+                    <h2>Our Vision</h2>
+                    <p>
+                        We envision Consolatrix Campus Club as a beacon of hope and excellence in student life - a place where every individual discovers their unique calling and develops the skills, character, and faith needed to make a positive impact in the world.
+                    </p>
+                    <p>
+                        Our dream is to see students not just succeed academically, but flourish as whole persons: spiritually grounded, emotionally mature, socially conscious, and equipped with the talents and confidence to serve God and others throughout their lives.
+                    </p>
+                    <div class="vision-highlights">
+                        <div class="highlight-item">
+                            <i class="fas fa-star"></i>
+                            <span>Discover and develop unique talents</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-users"></i>
+                            <span>Build lasting friendships and community</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-heart"></i>
+                            <span>Grow in faith and character</span>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-hands-helping"></i>
+                            <span>Make a positive difference in the world</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="team-container">
+            <h2 class="section-title">Leadership Team</h2>
+            <p class="section-subtitle">Meet the dedicated leaders who guide and support our community</p>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-header">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="team-body">
+                        <h3 class="team-name">Fr. Michael Santos</h3>
+                        <p class="team-role">Director & Spiritual Advisor</p>
+                        <p class="team-description">Provides spiritual guidance and overall direction for all club activities, ensuring alignment with our Christian values and mission.</p>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-header">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="team-body">
+                        <h3 class="team-name">Ms. Sarah Rodriguez</h3>
+                        <p class="team-role">Program Coordinator</p>
+                        <p class="team-description">Coordinates club activities, manages schedules, and ensures smooth operation of all programs and events throughout the year.</p>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-header">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <div class="team-body">
+                        <h3 class="team-name">Mr. David Chen</h3>
+                        <p class="team-role">Student Activities Manager</p>
+                        <p class="team-description">Oversees student leadership development and facilitates communication between different clubs to promote collaboration and unity.</p>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-header">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="team-body">
+                        <h3 class="team-name">Ms. Maria Gonzales</h3>
+                        <p class="team-role">Academic Liaison</p>
+                        <p class="team-description">Ensures club activities complement academic goals and helps students balance their extracurricular involvement with studies.</p>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-header">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="team-body">
+                        <h3 class="team-name">Mrs. Grace Thompson</h3>
+                        <p class="team-role">Community Outreach Director</p>
+                        <p class="team-description">Develops partnerships with local organizations and coordinates service projects that allow students to make a positive impact in the community.</p>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-header">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="team-body">
+                        <h3 class="team-name">Student Council</h3>
+                        <p class="team-role">Student Representatives</p>
+                        <p class="team-description">Elected student leaders who voice member concerns, propose new initiatives, and help bridge communication between students and staff.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Consolatrix Campus Club - ARSC Christ-Centered School Community</p>
+        <p>Building faith, character, and community through shared passions and service</p>
+    </footer>
+
+    <script>
+        // Sidebar Functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                themeIconSidebar.className = 'fas fa-moon';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                themeIconSidebar.className = 'fas fa-sun';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Add entrance animation
+        window.addEventListener('load', function() {
+            const cards = document.querySelectorAll('.value-card, .team-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 100);
+            });
+
+            // Animate statistics
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        const finalValue = target.textContent;
+                        const numericValue = parseInt(finalValue);
+                        const duration = 2000;
+                        const increment = numericValue / (duration / 16);
+                        let current = 0;
+                        
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= numericValue) {
+                                target.textContent = finalValue;
+                                clearInterval(timer);
+                            } else {
+                                target.textContent = Math.floor(current) + '+';
+                            }
+                        }, 16);
+                        
+                        observer.unobserve(target);
+                    }
+                });
+            });
+
+            statNumbers.forEach(stat => {
+                observer.observe(stat);
+            });
+        });
+    </script>
+</body>
+</html>

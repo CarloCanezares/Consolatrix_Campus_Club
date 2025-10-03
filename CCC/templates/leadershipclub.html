@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leadership & Service - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --dark-navy: #020617;
+            --light-navy: #334155;
+            --accent-emerald: #10b981;
+            --accent-green: #059669;
+            --accent-teal: #14b8a6;
+            --accent-forest: #047857;
+            --accent-gold: #f59e0b;
+            --accent-amber: #fbbf24;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --primary-navy: #1e40af;
+            --secondary-navy: #3b82f6;
+            --light-navy: #60a5fa;
+            --accent-emerald: #34d399;
+            --accent-green: #10b981;
+            --accent-teal: #2dd4bf;
+            --accent-forest: #059669;
+            --accent-gold: #fbbf24;
+            --accent-amber: #fcd34d;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-navy);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-navy);
+            background: var(--dark-navy);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-emerald);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle-menu {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .theme-toggle-menu span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--secondary-navy);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--secondary-navy);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-navy);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--light-navy);
+            transform: scale(1.1);
+        }
+
+        /* Leadership Hero */
+        .leadership-hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 50%, #059669 100%);
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+
+        .leadership-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 40%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 60%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .leadership-hero::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+            top: -150px;
+            right: -150px;
+            animation: leadershipFloat 22s ease-in-out infinite;
+        }
+
+        @keyframes leadershipFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(-30px, 30px) rotate(90deg) scale(1.1); }
+            50% { transform: translate(30px, -30px) rotate(180deg) scale(0.9); }
+            75% { transform: translate(-40px, -20px) rotate(270deg) scale(1.05); }
+        }
+
+        .hero-content-leadership {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content-leadership h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.4);
+            line-height: 1.1;
+        }
+
+        .hero-content-leadership .subtitle {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 1);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content-leadership p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .hero-btn {
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hero-btn-primary {
+            background: white;
+            color: var(--accent-emerald);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-secondary);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent-emerald) 0%, var(--accent-teal) 100%);
+            color: white;
+            border-color: var(--accent-emerald);
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--border-color);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            flex: 1;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .search-box i {
+            color: var(--text-light);
+        }
+
+        /* Leadership Grid */
+        .leadership-section {
+            padding: 4rem 0;
+            background: var(--bg-primary);
+        }
+
+        .leadership-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .leadership-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .leadership-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .leadership-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .leadership-card:hover::before {
+            opacity: 1;
+        }
+
+        .leadership-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.25);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .leadership-image {
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .leadership-image.student-government {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+
+        .leadership-image.community-service {
+            background: linear-gradient(135deg, #14b8a6 0%, #059669 100%);
+        }
+
+        .leadership-image.volunteer-corps {
+            background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+        }
+
+        .leadership-image.peer-mentoring {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .leadership-image.environmental {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        }
+
+        .leadership-image.outreach {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        }
+
+        .leadership-image.youth-ministry {
+            background: linear-gradient(135deg, #047857 0%, #14b8a6 100%);
+        }
+
+        .leadership-image.academic-council {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+
+        .leadership-image.disaster-response {
+            background: linear-gradient(135deg, #ef4444 0%, #10b981 100%);
+        }
+
+        .leadership-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255,255,255,0.2) 0%, transparent 50%);
+            animation: leadershipShimmer 8s ease-in-out infinite;
+        }
+
+        @keyframes leadershipShimmer {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 0.5;
+            }
+            33% { 
+                transform: translate(20px, -20px) scale(1.1) rotate(120deg);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9) rotate(240deg);
+                opacity: 0.6;
+            }
+        }
+
+        .leadership-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-emerald);
+        }
+
+        .leadership-content {
+            padding: 2.5rem;
+        }
+
+        .leadership-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .leadership-category {
+            background: linear-gradient(135deg, var(--accent-emerald) 0%, var(--accent-teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .leadership-description {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1.75rem;
+            font-size: 0.95rem;
+        }
+
+        .leadership-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .info-item i {
+            color: var(--accent-emerald);
+        }
+
+        .leadership-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--accent-emerald) 0%, var(--accent-teal) 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-emerald) 0%, var(--accent-teal) 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-emerald);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-emerald) 0%, var(--accent-teal) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-navy);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content-leadership h1 {
+                font-size: 2.5rem;
+            }
+
+            .leadership-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                Consolatrix Campus
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a href="{% url 'index' %}" class="menu-item active">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="#clubs" class="menu-item">
+                <i class="fas fa-users"></i>
+                Browse Clubs
+            </a>
+            <a href="#events" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="#about" class="menu-item">
+                <i class="fas fa-info-circle"></i>
+                About Us
+            </a>
+            
+              <div class="menu-section">
+                <div class="menu-section-title">Categories</div>
+                <a href="{% url 'sportsclub' %}" class="menu-item">
+                    <i class="fas fa-running"></i>
+                    Sports & Athletics
+                </a>
+                <a href="{% url 'artsclub' %}" class="menu-item">
+                    <i class="fas fa-palette"></i>
+                    Arts & Creativity
+                </a>
+                <a href="{% url 'musicclub' %}" class="menu-item">
+                    <i class="fas fa-music"></i>
+                    Music & Performance
+                </a>
+                <a href="{% url 'danceclub' %}" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    Dance & Movement
+                </a>
+                <a href="{% url 'readingclub' %}" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Reading & Literature
+                </a>
+                <a href="{% url 'leadershipclub' %}" class="menu-item">
+                    <i class="fas fa-crown"></i>
+                    Leadership & Service
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+                <a href="#profile" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+                <a href="#settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="{% url 'contact'%}" class="menu-item">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Appearance</div>
+                <button class="menu-item theme-toggle-menu" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon-sidebar"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo">
+                    <i class="fas fa-crown"></i>
+                    Leadership & Service
+                </a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Leadership Hero -->
+    <section class="leadership-hero">
+        <div class="hero-content-leadership">
+            <h1>Leadership & Service</h1>
+            <p class="subtitle">Empowering Tomorrow's Leaders</p>
+            <p>Develop your leadership potential and make a meaningful impact through service. Join organizations dedicated to student governance, community outreach, and positive change in our school and beyond.</p>
+            
+            <div class="hero-cta">
+                <button class="hero-btn hero-btn-primary" onclick="document.getElementById('leadershipGrid').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fas fa-star"></i>
+                    Start Leading
+                </button>
+                <a href="#service-projects" class="hero-btn hero-btn-secondary">
+                    <i class="fas fa-heart"></i>
+                    Service Projects
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Roles</button>
+                <button class="filter-btn" data-filter="government">Student Government</button>
+                <button class="filter-btn" data-filter="service">Community Service</button>
+                <button class="filter-btn" data-filter="ministry">Ministry</button>
+                <button class="filter-btn" data-filter="academic">Academic</button>
+                <button class="filter-btn" data-filter="outreach">Outreach</button>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search leadership roles...">
+            </div>
+        </div>
+    </section>
+
+    <!-- Leadership Grid -->
+    <section class="leadership-section">
+        <div class="leadership-container">
+            <div class="leadership-grid" id="leadershipGrid">
+                <!-- Student Government -->
+                <div class="leadership-card" data-category="government">
+                    <div class="leadership-image student-government">
+                        <i class="fas fa-crown"></i>
+                        <span class="leadership-badge">Open Positions: 8</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Student Government</h3>
+                        <p class="leadership-category">Student Government • Leadership</p>
+                        <p class="leadership-description">Lead your school community as part of the student council. Represent student interests, organize events, and make decisions that shape campus life for everyone.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Wed, Fri • 4-6 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>15-20 officers</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Public Speaking</span>
+                            <span class="tag">Event Planning</span>
+                            <span class="tag">Policy Making</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Student Government')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Community Service Corps -->
+                <div class="leadership-card" data-category="service">
+                    <div class="leadership-image community-service">
+                        <i class="fas fa-hands-helping"></i>
+                        <span class="leadership-badge">Open Positions: 12</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Community Service Corps</h3>
+                        <p class="leadership-category">Community Service • Outreach</p>
+                        <p class="leadership-description">Organize and lead community service projects that make a real difference. From feeding programs to educational outreach, help those in need while developing leadership skills.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Sat, Sun • 8 AM-4 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>20-30 volunteers</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Project Management</span>
+                            <span class="tag">Community Impact</span>
+                            <span class="tag">Team Building</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Community Service Corps')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Volunteer Leadership Corps -->
+                <div class="leadership-card" data-category="service">
+                    <div class="leadership-image volunteer-corps">
+                        <i class="fas fa-star"></i>
+                        <span class="leadership-badge">Open Positions: 10</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Volunteer Leadership Corps</h3>
+                        <p class="leadership-category">Service • Leadership Development</p>
+                        <p class="leadership-description">Train to become a volunteer coordinator and lead various service initiatives. Develop organizational skills while making a positive impact in the community.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Flexible Schedule</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-15 leaders</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Volunteer Management</span>
+                            <span class="tag">Leadership Training</span>
+                            <span class="tag">Social Impact</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Volunteer Leadership Corps')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Peer Mentoring Program -->
+                <div class="leadership-card" data-category="academic service">
+                    <div class="leadership-image peer-mentoring">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span class="leadership-badge">Open Positions: 15</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Peer Mentoring Program</h3>
+                        <p class="leadership-category">Academic Support • Mentorship</p>
+                        <p class="leadership-description">Guide and support fellow students in their academic journey. Provide tutoring, study groups, and personal guidance to help others succeed.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Tue, Thu • 3-5 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>20-25 mentors</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Academic Excellence</span>
+                            <span class="tag">Mentorship Skills</span>
+                            <span class="tag">Student Support</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Peer Mentoring Program')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Environmental Action Team -->
+                <div class="leadership-card" data-category="service outreach">
+                    <div class="leadership-image environmental">
+                        <i class="fas fa-leaf"></i>
+                        <span class="leadership-badge">Open Positions: 8</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Environmental Action Team</h3>
+                        <p class="leadership-category">Environmental • Sustainability</p>
+                        <p class="leadership-description">Lead environmental initiatives on campus and in the community. Organize clean-up drives, sustainability projects, and awareness campaigns for a greener future.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Wed, Sat • 2-5 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-18 activists</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Environmental Advocacy</span>
+                            <span class="tag">Sustainability</span>
+                            <span class="tag">Community Action</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Environmental Action Team')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Campus Outreach Ministry -->
+                <div class="leadership-card" data-category="ministry outreach">
+                    <div class="leadership-image outreach">
+                        <i class="fas fa-cross"></i>
+                        <span class="leadership-badge">Open Positions: 6</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Campus Outreach Ministry</h3>
+                        <p class="leadership-category">Ministry • Spiritual Leadership</p>
+                        <p class="leadership-description">Share God's love through organized outreach programs. Visit communities, organize mission trips, and lead evangelistic efforts with fellow believers.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Thu, Sun • 1-6 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>10-15 ministers</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Spiritual Leadership</span>
+                            <span class="tag">Mission Work</span>
+                            <span class="tag">Evangelism</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Campus Outreach Ministry')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Youth Ministry Leadership -->
+                <div class="leadership-card" data-category="ministry">
+                    <div class="leadership-image youth-ministry">
+                        <i class="fas fa-praying-hands"></i>
+                        <span class="leadership-badge">Open Positions: 10</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Youth Ministry Leadership</h3>
+                        <p class="leadership-category">Ministry • Youth Development</p>
+                        <p class="leadership-description">Lead and mentor younger students in their spiritual journey. Organize youth programs, Bible studies, and faith-building activities for middle and high school students.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Fri • 5-8 PM, Sun • 2-5 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-18 leaders</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Youth Mentorship</span>
+                            <span class="tag">Bible Teaching</span>
+                            <span class="tag">Faith Development</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Youth Ministry Leadership')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Academic Honor Council -->
+                <div class="leadership-card" data-category="academic government">
+                    <div class="leadership-image academic-council">
+                        <i class="fas fa-book"></i>
+                        <span class="leadership-badge">Open Positions: 5</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Academic Honor Council</h3>
+                        <p class="leadership-category">Academic • Integrity</p>
+                        <p class="leadership-description">Uphold academic excellence and integrity on campus. Review academic policies, organize honor code initiatives, and promote a culture of academic honesty.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Wed • 5-6 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>8-12 council members</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Academic Excellence</span>
+                            <span class="tag">Integrity Leadership</span>
+                            <span class="tag">Policy Review</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Academic Honor Council')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Disaster Response Team -->
+                <div class="leadership-card" data-category="service outreach">
+                    <div class="leadership-image disaster-response">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="leadership-badge">Open Positions: 12</span>
+                    </div>
+                    <div class="leadership-content">
+                        <h3 class="leadership-title">Disaster Response Team</h3>
+                        <p class="leadership-category">Emergency Response • Service</p>
+                        <p class="leadership-description">Train to respond to emergencies and natural disasters. Learn first aid, emergency preparedness, and lead relief efforts for affected communities.</p>
+                        
+                        <div class="leadership-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Training: Sat • 8 AM-12 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>15-20 responders</span>
+                            </div>
+                        </div>
+
+                        <div class="leadership-tags">
+                            <span class="tag">Emergency Response</span>
+                            <span class="tag">First Aid Training</span>
+                            <span class="tag">Crisis Leadership</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Disaster Response Team')">
+                            <i class="fas fa-paper-plane"></i>
+                            Apply for Position
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2 id="modalTitle">Apply for Leadership Position</h2>
+                <p>Ready to make a difference? Share your leadership vision with us</p>
+            </div>
+            <div class="modal-body">
+                <form id="applicationForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentId">Student ID *</label>
+                        <input type="text" id="studentId" required placeholder="e.g., 2024-12345">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" required placeholder="your.email@consolatrix.edu">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Contact Number *</label>
+                        <input type="tel" id="phone" required placeholder="+63 912 345 6789">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yearLevel">Year Level *</label>
+                        <select id="yearLevel" required>
+                            <option value="">Select your year level</option>
+                            <option value="1st">1st Year</option>
+                            <option value="2nd">2nd Year</option>
+                            <option value="3rd">3rd Year</option>
+                            <option value="4th">4th Year</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leadership">Leadership Experience *</label>
+                        <select id="leadership" required>
+                            <option value="">Select your experience level</option>
+                            <option value="none">No formal leadership experience</option>
+                            <option value="school">School-based leadership roles</option>
+                            <option value="community">Community leadership experience</option>
+                            <option value="extensive">Extensive leadership background</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="positions">Previous Leadership Positions (Optional)</label>
+                        <input type="text" id="positions" placeholder="e.g., Class President, Club Officer, Team Captain">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whyApply">Why do you want this leadership position? *</label>
+                        <textarea id="whyApply" required placeholder="Describe your motivation and vision for this role..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="goals">What do you hope to achieve in this position? *</label>
+                        <textarea id="goals" required placeholder="Share your goals and how you plan to make a positive impact..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availability">Time Commitment & Availability *</label>
+                        <textarea id="availability" required placeholder="Confirm your availability for meetings and activities..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="qualifications">Relevant Skills & Qualifications</label>
+                        <textarea id="qualifications" placeholder="List any relevant skills, certifications, or experiences..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check-circle"></i>
+                        Submit Application
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Consolatrix Campus Club - Leadership & Service Division</p>
+        <p>Leading with purpose, serving with love!</p>
+    </footer>
+
+    <script>
+        let selectedPosition = '';
+
+        // Sidebar Functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                themeIconSidebar.className = 'fas fa-moon';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                themeIconSidebar.className = 'fas fa-sun';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Modal Functions
+        function openModal(position) {
+            selectedPosition = position;
+            document.getElementById('modalTitle').textContent = `Apply for ${position}`;
+            document.getElementById('applicationModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('applicationModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            document.getElementById('applicationForm').reset();
+        }
+
+        // Filter Functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const leadershipCards = document.querySelectorAll('.leadership-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                leadershipCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const category = card.getAttribute('data-category');
+                        if (category.includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            leadershipCards.forEach(card => {
+                const title = card.querySelector('.leadership-title').textContent.toLowerCase();
+                const description = card.querySelector('.leadership-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Form Submission
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                position: selectedPosition,
+                fullName: document.getElementById('fullName').value,
+                studentId: document.getElementById('studentId').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                yearLevel: document.getElementById('yearLevel').value,
+                leadership: document.getElementById('leadership').value,
+                positions: document.getElementById('positions').value,
+                whyApply: document.getElementById('whyApply').value,
+                goals: document.getElementById('goals').value,
+                availability: document.getElementById('availability').value,
+                qualifications: document.getElementById('qualifications').value
+            };
+            
+            console.log('Leadership application submitted:', formData);
+            
+            // Show success message
+            alert(`Application submitted successfully for ${selectedPosition}!\n\nThank you for your interest in serving our school community! We'll review your application and contact you within 5-7 business days for the next steps in the selection process.\n\nTogether we lead and serve!`);
+            
+            closeModal();
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+                closeModal();
+            }
+        });
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('applicationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

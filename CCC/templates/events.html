@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --dark-navy: #020617;
+            --light-navy: #334155;
+            --accent-gold: #fbbf24;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+            --accent-red: #ef4444;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --primary-navy: #1e40af;
+            --secondary-navy: #3b82f6;
+            --light-navy: #60a5fa;
+            --accent-gold: #fcd34d;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-navy);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-navy);
+            background: var(--dark-navy);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-gold);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle-menu {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .theme-toggle-menu span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--secondary-navy);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--secondary-navy);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-navy);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--light-navy);
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .events-hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+
+        .events-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Calendar View Toggle */
+        .view-controls {
+            background: var(--bg-secondary);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+
+        .controls-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .view-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .view-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-btn:hover, .view-btn.active {
+            background: var(--primary-navy);
+            color: white;
+            border-color: var(--primary-navy);
+        }
+
+        .filter-dropdown {
+            position: relative;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Events Section */
+        .events-section {
+            padding: 4rem 0;
+            background: var(--bg-primary);
+        }
+
+        .events-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-gold);
+        }
+
+        .month-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .events-count {
+            font-size: 1rem;
+            color: var(--text-light);
+            background: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-header {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+        }
+
+        .event-header.sports {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+        }
+
+        .event-header.arts {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+        }
+
+        .event-header.music {
+            background: linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%);
+        }
+
+        .event-header.dance {
+            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+        }
+
+        .event-header.reading {
+            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+        }
+
+        .event-header.leadership {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        }
+
+        .event-date-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 0.75rem;
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .event-day {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-navy);
+            line-height: 1;
+        }
+
+        .event-month {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .event-category-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .event-body {
+            padding: 2rem;
+        }
+
+        .event-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .event-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .event-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .event-detail i {
+            width: 20px;
+            color: var(--accent-gold);
+        }
+
+        .event-description {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .attendees {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .attendees-avatars {
+            display: flex;
+            margin-left: -8px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--card-bg);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: -8px;
+        }
+
+        .attendees-count {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .register-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.3);
+        }
+
+        /* Calendar Grid View */
+        .calendar-view {
+            display: none;
+        }
+
+        .calendar-view.active {
+            display: block;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .calendar-header {
+            background: var(--primary-navy);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .calendar-day {
+            background: var(--card-bg);
+            min-height: 120px;
+            padding: 0.75rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day:hover {
+            background: var(--bg-secondary);
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.4;
+        }
+
+        .calendar-day.today {
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .day-number {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-event {
+            background: var(--accent-blue);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-navy);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .calendar-grid {
+                font-size: 0.85rem;
+            }
+
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="homepage-fixed.html" class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                Consolatrix Campus
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a href="{% url 'home' %}" class="menu-item active">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="{% url 'clubs' %}" class="menu-item">
+                <i class="fas fa-users"></i>
+                Browse Clubs
+            </a>
+            <a href="{% url 'events' %}" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="{% url 'aboutus' %}" class="menu-item">
+                <i class="fas fa-info-circle"></i>
+                About Us
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Categories</div>
+                <a href="{% url 'sportsclub' %}" class="menu-item">
+                    <i class="fas fa-running"></i>
+                    Sports & Athletics
+                </a>
+                <a href="{% url 'artsclub' %}" class="menu-item">
+                    <i class="fas fa-palette"></i>
+                    Arts & Creativity
+                </a>
+                <a href="{% url 'musicclub' %}" class="menu-item">
+                    <i class="fas fa-music"></i>
+                    Music & Performance
+                </a>
+                <a href="{% url 'danceclub' %}" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    Dance & Movement
+                </a>
+                <a href="{% url 'readingclub' %}" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Reading & Literature
+                </a>
+                <a href="{% url 'leadershipclub' %}" class="menu-item">
+                    <i class="fas fa-crown"></i>
+                    Leadership & Service
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+                <a href="#profile" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+                <a href="#settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="{% url 'contact'%}" class="menu-item">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">Appearance</div>
+                <button class="menu-item theme-toggle-menu" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon-sidebar"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="homepage-fixed.html" class="logo">
+                    <i class="fas fa-calendar-alt"></i>
+                    Events
+                </a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="events-hero">
+        <div class="hero-content">
+            <h1>Campus Events</h1>
+            <p>Discover exciting events happening across all clubs. From sports tournaments to art exhibitions, music concerts to leadership seminars.</p>
+        </div>
+    </section>
+
+    <!-- View Controls -->
+    <section class="view-controls">
+        <div class="controls-container">
+            <div class="view-buttons">
+                <button class="view-btn active" onclick="switchView('list')">
+                    <i class="fas fa-list"></i>
+                    List View
+                </button>
+                <button class="view-btn" onclick="switchView('calendar')">
+                    <i class="fas fa-calendar"></i>
+                    Calendar View
+                </button>
+            </div>
+            <div class="filter-dropdown">
+                <select class="filter-select" onchange="filterEvents(this.value)">
+                    <option value="all">All Categories</option>
+                    <option value="sports">Sports & Athletics</option>
+                    <option value="arts">Arts & Creativity</option>
+                    <option value="music">Music & Performance</option>
+                    <option value="dance">Dance & Movement</option>
+                    <option value="reading">Reading & Literature</option>
+                    <option value="leadership">Leadership & Service</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events List View -->
+    <section class="events-section list-view active" id="listView">
+        <div class="events-container">
+            <!-- December Events -->
+            <div class="month-header">
+                <h2 class="month-title">December 2024</h2>
+                <span class="events-count">6 Events</span>
+            </div>
+
+            <div class="events-grid">
+                <!-- Sports Tournament -->
+                <div class="event-card" data-category="sports">
+                    <div class="event-header sports">
+                        <div class="event-date-badge">
+                            <div class="event-day">15</div>
+                            <div class="event-month">DEC</div>
+                        </div>
+                        <div class="event-category-badge">Sports</div>
+                    </div>
+                    <div class="event-body">
+                        <h3 class="event-title">Inter-Club Basketball Tournament</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>2:00 PM - 6:00 PM</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Sports Complex, Main Court</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>Sports & Athletics Club</span>
+                            </div>
+                        </div>
+                        <p class="event-description">
+                            Annual basketball tournament featuring teams from different clubs. Register your team now!
+                        </p>
+                        <div class="event-footer">
+                            <div class="attendees">
+                                <div class="attendees-avatars">
+                                    <div class="avatar">AB</div>
+                                    <div class="avatar">CD</div>
+                                    <div class="avatar">EF</div>
+                                </div>
+                                <span class="attendees-count">+24 attending</span>
+                            </div>
+                            <button class="register-btn" onclick="registerEvent('Basketball Tournament')">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Art Exhibition -->
+                <div class="event-card" data-category="arts">
+                    <div class="event-header arts">
+                        <div class="event-date-badge">
+                            <div class="event-day">18</div>
+                            <div class="event-month">DEC</div>
+                        </div>
+                        <div class="event-category-badge">Arts</div>
+                    </div>
+                    <div class="event-body">
+                        <h3 class="event-title">Student Art Exhibition</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>10:00 AM - 8:00 PM</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Campus Gallery, Building A</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>Arts & Creativity Club</span>
+                            </div>
+                        </div>
+                        <p class="event-description">
+                            Showcase of student artwork including paintings, photography, and digital designs. Open to all!
+                        </p>
+                        <div class="event-footer">
+                            <div class="attendees">
+                                <div class="attendees-avatars">
+                                    <div class="avatar">GH</div>
+                                    <div class="avatar">IJ</div>
+                                    <div class="avatar">KL</div>
+                                </div>
+                                <span class="attendees-count">+18 attending</span>
+                            </div>
+                            <button class="register-btn" onclick="registerEvent('Art Exhibition')">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Christmas Concert -->
+                <div class="event-card" data-category="music">
+                    <div class="event-header music">
+                        <div class="event-date-badge">
+                            <div class="event-day">20</div>
+                            <div class="event-month">DEC</div>
+                        </div>
+                        <div class="event-category-badge">Music</div>
+                    </div>
+                    <div class="event-body">
+                        <h3 class="event-title">Christmas Concert</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>6:00 PM - 9:00 PM</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Main Auditorium</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>Music & Performance Club</span>
+                            </div>
+                        </div>
+                        <p class="event-description">
+                            Annual Christmas concert featuring choir, band, and special performances. Celebrate the season with music!
+                        </p>
+                        <div class="event-footer">
+                            <div class="attendees">
+                                <div class="attendees-avatars">
+                                    <div class="avatar">MN</div>
+                                    <div class="avatar">OP</div>
+                                    <div class="avatar">QR</div>
+                                </div>
+                                <span class="attendees-count">+45 attending</span>
+                            </div>
+                            <button class="register-btn" onclick="registerEvent('Christmas Concert')">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dance Showcase -->
+                <div class="event-card" data-category="dance">
+                    <div class="event-header dance">
+                        <div class="event-date-badge">
+                            <div class="event-day">22</div>
+                            <div class="event-month">DEC</div>
+                        </div>
+                        <div class="event-category-badge">Dance</div>
+                    </div>
+                    <div class="event-body">
+                        <h3 class="event-title">Winter Dance Showcase</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>5:00 PM - 8:00 PM</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Performing Arts Theater</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>Dance & Movement Club</span>
+                            </div>
+                        </div>
+                        <p class="event-description">
+                            Featuring contemporary, hip-hop, ballet, and cultural dance performances by talented students.
+                        </p>
+                        <div class="event-footer">
+                            <div class="attendees">
+                                <div class="attendees-avatars">
+                                    <div class="avatar">ST</div>
+                                    <div class="avatar">UV</div>
+                                    <div class="avatar">WX</div>
+                                </div>
+                                <span class="attendees-count">+32 attending</span>
+                            </div>
+                            <button class="register-btn" onclick="registerEvent('Dance Showcase')">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Book Fair -->
+                <div class="event-card" data-category="reading">
+                    <div class="event-header reading">
+                        <div class="event-date-badge">
+                            <div class="event-day">27</div>
+                            <div class="event-month">DEC</div>
+                        </div>
+                        <div class="event-category-badge">Literature</div>
+                    </div>
+                    <div class="event-body">
+                        <h3 class="event-title">Campus Book Fair</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>9:00 AM - 5:00 PM</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Library Courtyard</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>Reading & Literature Club</span>
+                            </div>
+                        </div>
+                        <p class="event-description">
+                            Browse and purchase books, meet local authors, and participate in reading activities and discussions.
+                        </p>
+                        <div class="event-footer">
+                            <div class="attendees">
+                                <div class="attendees-avatars">
+                                    <div class="avatar">YZ</div>
+                                    <div class="avatar">AA</div>
+                                    <div class="avatar">BB</div>
+                                </div>
+                                <span class="attendees-count">+28 attending</span>
+                            </div>
+                            <button class="register-btn" onclick="registerEvent('Book Fair')">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leadership Summit -->
+                <div class="event-card" data-category="leadership">
+                    <div class="event-header leadership">
+                        <div class="event-date-badge">
+                            <div class="event-day">29</div>
+                            <div class="event-month">DEC</div>
+                        </div>
+                        <div class="event-category-badge">Leadership</div>
+                    </div>
+                    <div class="event-body">
+                        <h3 class="event-title">Youth Leadership Summit</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>8:00 AM - 4:00 PM</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Conference Hall</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>Leadership & Service Club</span>
+                            </div>
+                        </div>
+                        <p class="event-description">
+                            Full-day leadership training with workshops, keynote speakers, and networking opportunities.
+                        </p>
+                        <div class="event-footer">
+                            <div class="attendees">
+                                <div class="attendees-avatars">
+                                    <div class="avatar">CC</div>
+                                    <div class="avatar">DD</div>
+                                    <div class="avatar">EE</div>
+                                </div>
+                                <span class="attendees-count">+38 attending</span>
+                            </div>
+                            <button class="register-btn" onclick="registerEvent('Leadership Summit')">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calendar View -->
+    <section class="events-section calendar-view" id="calendarView">
+        <div class="events-container">
+            <div class="month-header">
+                <h2 class="month-title">December 2024</h2>
+                <div>
+                    <button class="view-btn" onclick="changeMonth('prev')">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="view-btn" onclick="changeMonth('next')">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="calendar-header">Sun</div>
+                <div class="calendar-header">Mon</div>
+                <div class="calendar-header">Tue</div>
+                <div class="calendar-header">Wed</div>
+                <div class="calendar-header">Thu</div>
+                <div class="calendar-header">Fri</div>
+                <div class="calendar-header">Sat</div>
+
+                <!-- Calendar days with events -->
+                <div class="calendar-day">
+                    <div class="day-number">1</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">2</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">3</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">4</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">5</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">6</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">7</div>
+                </div>
+
+                <!-- Week 2 -->
+                <div class="calendar-day">
+                    <div class="day-number">8</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">9</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">10</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">11</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">12</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">13</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">14</div>
+                </div>
+
+                <!-- Week 3 with events -->
+                <div class="calendar-day">
+                    <div class="day-number">15</div>
+                    <div class="calendar-event" style="background: #f97316;">Basketball</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">16</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">17</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">18</div>
+                    <div class="calendar-event" style="background: #8b5cf6;">Art Exhibition</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">19</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">20</div>
+                    <div class="calendar-event" style="background: #fbbf24; color: #020617;">Christmas Concert</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">21</div>
+                </div>
+
+                <!-- Week 4 with more events -->
+                <div class="calendar-day">
+                    <div class="day-number">22</div>
+                    <div class="calendar-event" style="background: #0ea5e9;">Dance Showcase</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">23</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">24</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">25</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">26</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">27</div>
+                    <div class="calendar-event" style="background: #991b1b;">Book Fair</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">28</div>
+                </div>
+
+                <!-- Week 5 -->
+                <div class="calendar-day">
+                    <div class="day-number">29</div>
+                    <div class="calendar-event" style="background: #10b981;">Leadership Summit</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">30</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-number">31</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="day-number">1</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="day-number">2</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="day-number">3</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="day-number">4</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Consolatrix Campus Club - Events Calendar</p>
+        <p>Stay updated with exciting campus activities!</p>
+    </footer>
+
+    <script>
+        // Sidebar Functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                themeIconSidebar.className = 'fas fa-moon';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                themeIconSidebar.className = 'fas fa-sun';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Switch between List and Calendar view
+        function switchView(view) {
+            const listView = document.getElementById('listView');
+            const calendarView = document.getElementById('calendarView');
+            const viewButtons = document.querySelectorAll('.view-buttons .view-btn');
+
+            if (view === 'list') {
+                listView.classList.add('active');
+                calendarView.classList.remove('active');
+                viewButtons[0].classList.add('active');
+                viewButtons[1].classList.remove('active');
+            } else {
+                listView.classList.remove('active');
+                calendarView.classList.add('active');
+                viewButtons[0].classList.remove('active');
+                viewButtons[1].classList.add('active');
+            }
+        }
+
+        // Filter events by category
+        function filterEvents(category) {
+            const eventCards = document.querySelectorAll('.event-card');
+
+            eventCards.forEach(card => {
+                if (category === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const cardCategory = card.getAttribute('data-category');
+                    card.style.display = cardCategory === category ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Register for event
+        function registerEvent(eventName) {
+            alert(`Registration successful!\n\nYou have been registered for: ${eventName}\n\nYou will receive a confirmation email with event details shortly.`);
+        }
+
+        // Change month (placeholder for calendar navigation)
+        function changeMonth(direction) {
+            alert(`Calendar navigation: ${direction}\n\nThis would switch to the ${direction === 'next' ? 'next' : 'previous'} month.`);
+        }
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Add entrance animation to event cards
+        window.addEventListener('load', function() {
+            const cards = document.querySelectorAll('.event-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

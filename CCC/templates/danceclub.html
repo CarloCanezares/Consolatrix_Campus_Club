@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dance & Movement - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --dark-navy: #020617;
+            --light-navy: #334155;
+            --accent-teal: #14b8a6;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #0ea5e9;
+            --accent-emerald: #10b981;
+            --accent-indigo: #6366f1;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --primary-navy: #1e40af;
+            --secondary-navy: #3b82f6;
+            --light-navy: #60a5fa;
+            --accent-teal: #2dd4bf;
+            --accent-cyan: #22d3ee;
+            --accent-blue: #38bdf8;
+            --accent-emerald: #34d399;
+            --accent-indigo: #818cf8;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-navy);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-navy);
+            background: var(--dark-navy);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-teal);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle-menu {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .theme-toggle-menu span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--secondary-navy);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--secondary-navy);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-navy);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--light-navy);
+            transform: scale(1.1);
+        }
+
+        /* Dance Hero */
+        .dance-hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 50%, #0ea5e9 100%);
+            position: relative;
+            overflow: hidden;
+            margin-top: 70px;
+        }
+
+        .dance-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 40%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 60%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .dance-hero::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            animation: danceFloat 18s ease-in-out infinite;
+        }
+
+        @keyframes danceFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(-40px, 40px) rotate(90deg) scale(1.1); }
+            50% { transform: translate(40px, -20px) rotate(180deg) scale(0.9); }
+            75% { transform: translate(-20px, -40px) rotate(270deg) scale(1.05); }
+        }
+
+        .hero-content-dance {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content-dance h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.4);
+            line-height: 1.1;
+        }
+
+        .hero-content-dance .subtitle {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 1);
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content-dance p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .hero-btn {
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hero-btn-primary {
+            background: white;
+            color: var(--accent-teal);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-secondary);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-cyan) 100%);
+            color: white;
+            border-color: var(--accent-teal);
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--border-color);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            flex: 1;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .search-box i {
+            color: var(--text-light);
+        }
+
+        /* Dance Grid */
+        .dance-section {
+            padding: 4rem 0;
+            background: var(--bg-primary);
+        }
+
+        .dance-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .dance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .dance-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .dance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .dance-card:hover::before {
+            opacity: 1;
+        }
+
+        .dance-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(20, 184, 166, 0.25);
+            border-color: rgba(20, 184, 166, 0.3);
+        }
+
+        .dance-image {
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dance-image.contemporary {
+            background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+        }
+
+        .dance-image.hiphop {
+            background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+        }
+
+        .dance-image.ballet {
+            background: linear-gradient(135deg, #8b5cf6 0%, #14b8a6 100%);
+        }
+
+        .dance-image.cultural {
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+        }
+
+        .dance-image.ballroom {
+            background: linear-gradient(135deg, #6366f1 0%, #14b8a6 100%);
+        }
+
+        .dance-image.jazz {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+        }
+
+        .dance-image.cheerleading {
+            background: linear-gradient(135deg, #ef4444 0%, #14b8a6 100%);
+        }
+
+        .dance-image.fitness {
+            background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+        }
+
+        .dance-image.folk {
+            background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+        }
+
+        .dance-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255,255,255,0.2) 0%, transparent 50%);
+            animation: danceShimmer 6s ease-in-out infinite;
+        }
+
+        @keyframes danceShimmer {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 0.5;
+            }
+            33% { 
+                transform: translate(25px, -25px) scale(1.1) rotate(120deg);
+                opacity: 0.8;
+            }
+            66% {
+                transform: translate(-25px, 25px) scale(0.9) rotate(240deg);
+                opacity: 0.6;
+            }
+        }
+
+        .dance-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+        }
+
+        .dance-content {
+            padding: 2.5rem;
+        }
+
+        .dance-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .dance-category {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dance-description {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1.75rem;
+            font-size: 0.95rem;
+        }
+
+        .dance-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .info-item i {
+            color: var(--accent-teal);
+        }
+
+        .dance-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            border: 1px solid rgba(20, 184, 166, 0.2);
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(20, 184, 166, 0.5);
+            background: linear-gradient(135deg, #0f766e 0%, #0891b2 100%);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-teal);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-cyan) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(20, 184, 166, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-navy);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content-dance h1 {
+                font-size: 2.5rem;
+            }
+
+            .dance-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                Consolatrix Campus
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a href="{% url 'index' %}" class="menu-item active">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="#clubs" class="menu-item">
+                <i class="fas fa-users"></i>
+                Browse Clubs
+            </a>
+            <a href="#events" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="#about" class="menu-item">
+                <i class="fas fa-info-circle"></i>
+                About Us
+            </a>
+            
+              <div class="menu-section">
+                <div class="menu-section-title">Categories</div>
+                <a href="{% url 'sportsclub' %}" class="menu-item">
+                    <i class="fas fa-running"></i>
+                    Sports & Athletics
+                </a>
+                <a href="{% url 'artsclub' %}" class="menu-item">
+                    <i class="fas fa-palette"></i>
+                    Arts & Creativity
+                </a>
+                <a href="{% url 'musicclub' %}" class="menu-item">
+                    <i class="fas fa-music"></i>
+                    Music & Performance
+                </a>
+                <a href="{% url 'danceclub' %}" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    Dance & Movement
+                </a>
+                <a href="{% url 'readingclub' %}" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Reading & Literature
+                </a>
+                <a href="{% url 'leadershipclub' %}" class="menu-item">
+                    <i class="fas fa-crown"></i>
+                    Leadership & Service
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+                <a href="#profile" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+                <a href="#settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="{% url 'contact'%}" class="menu-item">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Appearance</div>
+                <button class="menu-item theme-toggle-menu" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon-sidebar"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo">
+                    <i class="fas fa-users"></i>
+                    Dance & Movement
+                </a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dance Hero -->
+    <section class="dance-hero">
+        <div class="hero-content-dance">
+            <h1>Dance & Movement</h1>
+            <p class="subtitle">Where Rhythm Meets Expression</p>
+            <p>Express yourself through movement and discover the joy of dance. From contemporary to hip-hop, ballet to cultural dances, find your rhythm and connect with others who share your passion for movement and artistic expression.</p>
+            
+            <div class="hero-cta">
+                <button class="hero-btn hero-btn-primary" onclick="document.getElementById('danceGrid').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fas fa-music"></i>
+                    Find Your Style
+                </button>
+                <a href="#" class="hero-btn hero-btn-secondary">
+                    <i class="fas fa-play"></i>
+                    Watch Performances
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Styles</button>
+                <button class="filter-btn" data-filter="contemporary">Contemporary</button>
+                <button class="filter-btn" data-filter="urban">Urban</button>
+                <button class="filter-btn" data-filter="classical">Classical</button>
+                <button class="filter-btn" data-filter="cultural">Cultural</button>
+                <button class="filter-btn" data-filter="fitness">Fitness</button>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search dance styles...">
+            </div>
+        </div>
+    </section>
+
+    <!-- Dance Grid -->
+    <section class="dance-section">
+        <div class="dance-container">
+            <div class="dance-grid" id="danceGrid">
+                <!-- Contemporary Dance -->
+                <div class="dance-card" data-category="contemporary">
+                    <div class="dance-image contemporary">
+                        💃
+                        <span class="dance-badge">Open Slots: 12</span>
+                    </div>
+                    <div class="dance-content">
+                        <h3 class="dance-title">Contemporary Dance</h3>
+                        <p class="dance-category">Contemporary • Expressive</p>
+                        <p class="dance-description">Explore fluid movement and emotional expression through contemporary dance. Learn technique, improvisation, and choreography that tells stories through movement.</p>
+                        
+                        <div class="dance-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Tue, Thu • 4-6 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>15-20 dancers</span>
+                            </div>
+                        </div>
+
+                        <div class="dance-tags">
+                            <span class="tag">All Levels</span>
+                            <span class="tag">Emotional Expression</span>
+                            <span class="tag">Performances</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Contemporary Dance')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Class
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hip-Hop Dance -->
+                <div class="dance-card" data-category="urban">
+                    <div class="dance-image hiphop">
+                        🕺
+                        <span class="dance-badge">Open Slots: 18</span>
+                    </div>
+                    <div class="dance-content">
+                        <h3 class="dance-title">Hip-Hop Dance</h3>
+                        <p class="dance-category">Urban • Street Style</p>
+                        <p class="dance-description">Get down with the latest hip-hop moves and street dance styles. Learn popping, locking, breaking, and choreography to today's hottest tracks.</p>
+                        
+                        <div class="dance-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Wed, Fri • 5-7 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>20-25 dancers</span>
+                            </div>
+                        </div>
+
+                        <div class="dance-tags">
+                            <span class="tag">Street Styles</span>
+                            <span class="tag">High Energy</span>
+                            <span class="tag">Battles & Showcases</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Hip-Hop Dance')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Class
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ballet -->
+                <div class="dance-card" data-category="classical">
+                    <div class="dance-image ballet">
+                        🩰
+                        <span class="dance-badge">Open Slots: 10</span>
+                    </div>
+                    <div class="dance-content">
+                        <h3 class="dance-title">Classical Ballet</h3>
+                        <p class="dance-category">Classical • Technique</p>
+                        <p class="dance-description">Master the grace and precision of classical ballet. Learn proper technique, positions, and combinations while developing strength, flexibility, and artistry.</p>
+                        
+                        <div class="dance-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Wed • 3-5 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>12-16 dancers</span>
+                            </div>
+                        </div>
+
+                        <div class="dance-tags">
+                            <span class="tag">Classical Training</span>
+                            <span class="tag">Technique Focus</span>
+                            <span class="tag">Recitals</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Classical Ballet')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Class
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cultural Dance -->
+                <div class="dance-card" data-category="cultural">
+                    <div class="dance-image cultural">
+                        🌏
+                        <span class="dance-badge">Open Slots: 15</span>
+                    </div>
+                    <div class="dance-content">
+                        <h3 class="dance-title">Cultural Dance</h3>
+                        <p class="dance-category">Cultural • Traditional</p>
+                        <p class="dance-description">Celebrate heritage through traditional Filipino dances and other cultural styles. Learn folk dances, cultural stories, and connect with your roots through movement.</p>
+                        
+                        <div class="dance-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Tue, Thu • 3-5 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>18-22 dancers</span>
+                            </div>
+                        </div>
+
+                        <div class="dance-tags">
+                            <span class="tag">Filipino Folk</span>
+                            <span class="tag">Cultural Heritage</span>
+                            <span class="tag">Festivals</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Cultural Dance')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Class
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ballroom Dance -->
+                <div class="dance-card" data-category="classical">
+                    <div class="dance-image ballroom">
+                        💑
+                        <span class="dance-badge">Open Slots: 14</span>
+                    </div>
+                    <div class="dance-content">
+                        <h3 class="dance-title">Ballroom Dance</h3>
+                        <p class="dance-category">Ballroom • Partner Dance</p>
+                        <p class="dance-description">Learn elegant partner dancing including waltz, tango, foxtrot, and Latin styles. Develop coordination, musicality, and social dancing skills.</p>
+                        
+                        <div class="dance-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Wed, Fri • 6-8 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>16-20 dancers</span>
+                            </div>
+                        </div>
+
+                        <div class="dance-tags">
+                            <span class="tag">Partner Dance</span>
+                            <span class="tag">Social Skills</span>
+                            <span class="tag">Competitions</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Ballroom Dance')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Class
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Jazz Dance -->
+                <div class="dance-card" data-category="contemporary">
+                    <div class="dance-image jazz">
+                        🎭
+                        <span class="dance-badge">Open Slots: 16</span>
+                    </div>
+                    <div class="dance-content">
+                        <h3 class="dance-title">Jazz Dance</h3>
+                        <p class="dance-category">Jazz • Musical Theater</p>
+                        <p class="dance-description">Combine technique with theatrical flair in jazz dance. Learn kicks, turns, leaps, and stylized movement perfect for musical theater and performance.</p>
+                        
+                        <div class="dance-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Thu • 4-6 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>15-20 dancers</span>
+                            </div>
+                        </div>
+
+                        <div class="dance-tags">
+                            <span class="tag">Musical Theater</span>
+                            <span class="tag">Performance Style</span>
+                            <span class="tag">Show Productions</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Jazz Dance')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Class
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dance Fitness -->
+                <div class="dance-card" data-category="fitness">
+                    <div class="dance-image fitness">
+                        💪
+                        <span class="dance-badge">Open Slots: 20</span>
+                    </div>
+                    <div class="dance-content">
+                        <h3 class="dance-title">Dance Fitness</h3>
+                        <p class="dance-category">Fitness • Wellness</p>
+                        <p class="dance-description">Get fit while having fun with dance-based fitness classes. Combine cardio, strength, and flexibility training through energetic dance workouts.</p>
+                        
+                        <div class="dance-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Mon, Wed, Fri • 6-7 PM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-users"></i>
+                                <span>20-30 participants</span>
+                            </div>
+                        </div>
+
+                        <div class="dance-tags">
+                            <span class="tag">Cardio Workout</span>
+                            <span class="tag">All Fitness Levels</span>
+                            <span class="tag">Fun & Energetic</span>
+                        </div>
+
+                        <button class="apply-btn" onclick="openModal('Dance Fitness')">
+                            <i class="fas fa-paper-plane"></i>
+                            Join Class
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2 id="modalTitle">Apply for Dance Class</h2>
+                <p>Share your passion for movement with us</p>
+            </div>
+            <div class="modal-body">
+                <form id="applicationForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentId">Student ID *</label>
+                        <input type="text" id="studentId" required placeholder="e.g., 2024-12345">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" required placeholder="your.email@consolatrix.edu">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Contact Number *</label>
+                        <input type="tel" id="phone" required placeholder="+63 912 345 6789">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yearLevel">Year Level *</label>
+                        <select id="yearLevel" required>
+                            <option value="">Select your year level</option>
+                            <option value="1st">1st Year</option>
+                            <option value="2nd">2nd Year</option>
+                            <option value="3rd">3rd Year</option>
+                            <option value="4th">4th Year</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience">Dance Experience *</label>
+                        <select id="experience" required>
+                            <option value="">Select your experience level</option>
+                            <option value="beginner">Beginner - No prior experience</option>
+                            <option value="some">Some Experience - 1-2 years</option>
+                            <option value="intermediate">Intermediate - 3-5 years</option>
+                            <option value="advanced">Advanced - 5+ years</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="styles">Previous Dance Styles (Optional)</label>
+                        <input type="text" id="styles" placeholder="e.g., Ballet, Hip-hop, Contemporary">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whyJoin">Why do you want to join this dance style? *</label>
+                        <textarea id="whyJoin" required placeholder="Tell us about your passion for dance and what you hope to achieve..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availability">Available Class Times *</label>
+                        <textarea id="availability" required placeholder="List your available days and times for classes..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check-circle"></i>
+                        Submit Application
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Consolatrix Campus Club - Dance & Movement Division</p>
+        <p>Moving together in rhythm and faith!</p>
+    </footer>
+
+    <script>
+        let selectedDance = '';
+
+        // Sidebar Functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                themeIconSidebar.className = 'fas fa-moon';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                themeIconSidebar.className = 'fas fa-sun';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Modal Functions
+        function openModal(danceName) {
+            selectedDance = danceName;
+            document.getElementById('modalTitle').textContent = `Apply for ${danceName}`;
+            document.getElementById('applicationModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('applicationModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            document.getElementById('applicationForm').reset();
+        }
+
+        // Filter Functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const danceCards = document.querySelectorAll('.dance-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                danceCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const category = card.getAttribute('data-category');
+                        if (category.includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            danceCards.forEach(card => {
+                const title = card.querySelector('.dance-title').textContent.toLowerCase();
+                const description = card.querySelector('.dance-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Form Submission
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                dance: selectedDance,
+                fullName: document.getElementById('fullName').value,
+                studentId: document.getElementById('studentId').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                yearLevel: document.getElementById('yearLevel').value,
+                experience: document.getElementById('experience').value,
+                styles: document.getElementById('styles').value,
+                whyJoin: document.getElementById('whyJoin').value,
+                availability: document.getElementById('availability').value
+            };
+            
+            console.log('Application submitted:', formData);
+            
+            // Show success message
+            alert(`Application submitted successfully for ${selectedDance}!\n\nThank you for your interest in joining our dance community! We'll review your application and contact you within 3-5 business days.\n\nKeep dancing!`);
+            
+            closeModal();
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+                closeModal();
+            }
+        });
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>
