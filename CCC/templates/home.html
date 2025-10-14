@@ -873,7 +873,7 @@
                                 {{ user.first_name|default:user.email }}
                             </button>
                             <div class="user-dropdown">
-                                <a href="#">
+                                <a href="{% url 'profile'%}">
                                     <i class="fas fa-user"></i> Profile
                                 </a>
                                 <a href="{% url 'signout' %}" id="logoutLink">

@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --secondary-navy: #1e293b;
+            --dark-navy: #020617;
+            --light-navy: #334155;
+            --accent-gold: #fbbf24;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --primary-navy: #1e40af;
+            --secondary-navy: #3b82f6;
+            --light-navy: #60a5fa;
+            --accent-gold: #fcd34d;
+            --accent-blue: #60a5fa;
+            --accent-green: #34d399;
+            --accent-red: #f87171;
+            --text-dark: #f9fafb;
+            --text-light: #d1d5db;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --card-bg: #334155;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-navy);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-navy);
+            background: var(--dark-navy);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            padding: 2rem 0;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 1rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--secondary-navy);
+            color: white;
+            border-left-color: var(--accent-gold);
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle-menu {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .theme-toggle-menu span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--secondary-navy);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--secondary-navy);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--secondary-navy);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--light-navy);
+            transform: scale(1.1);
+        }
+
+        /* Profile Container */
+        .profile-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 2rem 2rem;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .profile-header-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--accent-blue);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid var(--primary-navy);
+        }
+
+        .avatar-upload i {
+            font-size: 0.9rem;
+        }
+
+        .profile-info {
+            flex: 1;
+            color: white;
+        }
+
+        .profile-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info .student-id {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info .student-department {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Profile Navigation Tabs */
+        .profile-tabs {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--bg-secondary);
+            color: var(--text-dark);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Profile Grid */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title i {
+            color: var(--accent-gold);
+        }
+
+        .edit-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .edit-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .form-group input:disabled {
+            background: var(--bg-secondary);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Club Cards */
+        .clubs-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .club-item {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .club-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .club-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .club-icon.sports { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .club-icon.arts { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); }
+        .club-icon.music { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .club-icon.dance { background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%); }
+        .club-icon.reading { background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%); }
+        .club-icon.leadership { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+
+        .club-details {
+            flex: 1;
+        }
+
+        .club-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .club-role {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .club-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .club-status.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        /* Activity Timeline */
+        .activity-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-gold) 100%);
+            color: white;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        /* Achievements */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .achievement-badge {
+            background: var(--bg-secondary);
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .achievement-badge:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Save Button */
+        .save-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.4);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent-blue);
+            background: var(--bg-secondary);
+            transform: translateX(5px);
+        }
+
+        .action-btn i {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-navy);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-info h1 {
+                font-size: 2rem;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .profile-tabs {
+                overflow-x: auto;
+            }
+
+            .achievements-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo">
+                <i class="fas fa-graduation-cap"></i>
+                Consolatrix Campus
+            </a>
+            <button class="sidebar-close" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a href="#home" class="menu-item">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="#clubs" class="menu-item">
+                <i class="fas fa-users"></i>
+                Browse Clubs
+            </a>
+            <a href="#events" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="#about" class="menu-item">
+                <i class="fas fa-info-circle"></i>
+                About Us
+            </a>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Categories</div>
+                <a href="#sports" class="menu-item">
+                    <i class="fas fa-running"></i>
+                    Sports & Athletics
+                </a>
+                <a href="#arts" class="menu-item">
+                    <i class="fas fa-palette"></i>
+                    Arts & Creativity
+                </a>
+                <a href="#music" class="menu-item">
+                    <i class="fas fa-music"></i>
+                    Music & Performance
+                </a>
+                <a href="#dance" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    Dance & Movement
+                </a>
+                <a href="#reading" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Reading & Literature
+                </a>
+                <a href="#leadership" class="menu-item">
+                    <i class="fas fa-crown"></i>
+                    Leadership & Service
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Account</div>
+                <a href="#profile" class="menu-item active">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+                <a href="#settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="#contact" class="menu-item">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Appearance</div>
+                <button class="menu-item theme-toggle-menu" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon-sidebar"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="openSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-header-content">
+               <div class="profile-avatar">
+                    {% with fn=user.first_name|default:'' ln=user.last_name|default:'' %}
+                        {{ fn|slice:":1"|upper }}{{ ln|slice:":1"|upper }}
+                    {% endwith %}
+                     <div class="avatar-upload">
+                        <i class="fas fa-camera"></i>
+                     </div>
+                 </div>
+                 <div class="profile-info">
+                    <h1>{{ user.get_full_name|default:user.email }}</h1>
+                    <div class="student-id">Student ID: {{ user.student_id|default:"N/A" }}</div>
+                    <div class="student-department">Department: {{ user.department|default:"N/A" }}</div>
+                     <div class="profile-stats">
+                         <div class="stat-item">
+                            <div class="stat-number">{{ active_clubs|length }}</div>
+                            <div class="stat-label">Active Clubs</div>
+                         </div>
+                         <div class="stat-item">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Events Attended</div>
+                         </div>
+                         <div class="stat-item">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Achievements</div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+        <!-- Profile Tabs -->
+        <div class="profile-tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">
+                <i class="fas fa-th-large"></i>
+                Overview
+            </button>
+            <button class="tab-btn" onclick="switchTab('personal')">
+                <i class="fas fa-user"></i>
+                Personal Info
+            </button>
+            <button class="tab-btn" onclick="switchTab('clubs')">
+                <i class="fas fa-users"></i>
+                My Clubs
+            </button>
+            <button class="tab-btn" onclick="switchTab('activity')">
+                <i class="fas fa-history"></i>
+                Activity
+            </button>
+            <button class="tab-btn" onclick="switchTab('achievements')">
+                <i class="fas fa-trophy"></i>
+                Achievements
+            </button>
+        </div>
+
+        <!-- Tab Content: Overview -->
+        <div class="tab-content active" id="overview-tab">
+            <div class="profile-grid">
+                <div>
+                    <!-- Personal Information Summary -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-user-circle"></i>
+                                Personal Information
+                            </h3>
+                            <button class="edit-btn" onclick="switchTab('personal')">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" value="{{ user.get_full_name }}" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" value="{{ user.email }}" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Year Level</label>
+                            <input type="text" value="{{ user.year_level|default:'N/A' }}" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <input type="text" value="{{ user.department |default:'N/A' }}" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="profile-card" style="margin-top: 2rem;">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-clock"></i>
+                                Recent Activity
+                            </h3>
+                        </div>
+                        <div class="activity-timeline">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Joined Contemporary Dance Club</div>
+                                    <div class="activity-time">2 days ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Attended Music Festival 2024</div>
+                                    <div class="activity-time">1 week ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Earned "Creative Soul" Achievement</div>
+                                    <div class="activity-time">2 weeks ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Profile Updated</div>
+                                    <div class="activity-time">3 weeks ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div>
+                    <!-- My Clubs -->
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-users"></i>
+                                My Clubs
+                            </h3>
+                        </div>
+                        <div class="clubs-list">
+                            {% if active_clubs %}
+                                {% for club in active_clubs %}
+                                    <div class="club-item">
+                                        <div class="club-icon arts">🎨</div>
+                                        <div class="club-details">
+                                            <div class="club-name">{{ club.name|default:club }}</div>
+                                            <div class="club-role">{{ club.role|default:"Member" }}</div>
+                                        </div>
+                                        <span class="club-status active">Active</span>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="club-item">
+                                    <div class="club-details">
+                                        <div class="club-name">No clubs yet</div>
+                                        <div class="club-role">Join a club to see it here</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="profile-card" style="margin-top: 2rem;">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-bolt"></i>
+                                Quick Actions
+                            </h3>
+                        </div>
+                        <div class="quick-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-search"></i>
+                                Browse More Clubs
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar-plus"></i>
+                                View Upcoming Events
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-certificate"></i>
+                                View Achievements
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Personal Info -->
+        <div class="tab-content" id="personal-tab">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-user-edit"></i>
+                        Edit Personal Information
+                    </h3>
+                </div>
+                <form id="personalInfoForm">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="fullName" value="{{ user.get_full_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Student ID *</label>
+                        <input type="text" value="{{ user.student_id|default:'N/A' }}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="email" value="{{ user.email }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="phone" value="{{ user.phone|default:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Year Level *</label>
+                        <input type="text" id="yearLevel" value="{{ user.year_level|default:'' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Department *</label>
+                        <select id="department" required>
+                            <option value="">Select Department</option>
+                            <option value="cas" selected>College of Arts and Sciences</option>
+                            <option value="coe">College of Education</option>
+                            <option value="cba">College of Business Administration</option>
+                            <option value="cit">College of Information Technology</option>
+                            <option value="coe">College of Engineering</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea id="bio" rows="4" placeholder="Tell us about yourself...">{{ user.bio|default:'' }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Interests</label>
+                        <input type="text" id="interests" value="{{ user.interests|default:''|join:', ' }}" placeholder="Separate with commas">
+                    </div>
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tab Content: My Clubs -->
+        <div class="tab-content" id="clubs-tab">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-users"></i>
+                        My Club Memberships
+                    </h3>
+                </div>
+                <div class="clubs-list">
+                    <div class="club-item">
+                        <div class="club-icon arts">🎨</div>
+                        <div class="club-details">
+                            <div class="club-name">Digital Art & Illustration</div>
+                            <div class="club-role">Member since September 2024</div>
+                        </div>
+                        <span class="club-status active">Active</span>
+                    </div>
+                    <div class="club-item">
+                        <div class="club-icon music">🎵</div>
+                        <div class="club-details">
+                            <div class="club-name">School Choir</div>
+                            <div class="club-role">Soprano • Member since August 2024</div>
+                        </div>
+                        <span class="club-status active">Active</span>
+                    </div>
+                    <div class="club-item">
+                        <div class="club-icon dance">💃</div>
+                        <div class="club-details">
+                            <div class="club-name">Contemporary Dance</div>
+                            <div class="club-role">Member since October 2024</div>
+                        </div>
+                        <span class="club-status active">Active</span>
+                    </div>
+                    <div class="club-item">
+                        <div class="club-icon reading">📚</div>
+                        <div class="club-details">
+                            <div class="club-name">Book Club</div>
+                            <div class="club-role">Member since July 2024</div>
+                        </div>
+                        <span class="club-status active">Active</span>
+                    </div>
+                    <div class="club-item">
+                        <div class="club-icon leadership">👑</div>
+                        <div class="club-details">
+                            <div class="club-name">Student Volunteers</div>
+                            <div class="club-role">Volunteer • Member since June 2024</div>
+                        </div>
+                        <span class="club-status active">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Activity -->
+        <div class="tab-content" id="activity-tab">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-history"></i>
+                        Activity History
+                    </h3>
+                </div>
+                <div class="activity-timeline">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Joined Contemporary Dance Club</div>
+                            <div class="activity-time">October 15, 2024 • 2 days ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Attended Music Festival 2024</div>
+                            <div class="activity-time">October 8, 2024 • 1 week ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Earned "Creative Soul" Achievement</div>
+                            <div class="activity-time">October 1, 2024 • 2 weeks ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Participated in Art Exhibition</div>
+                            <div class="activity-time">September 24, 2024 • 3 weeks ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Joined Digital Art & Illustration</div>
+                            <div class="activity-time">September 15, 2024 • 1 month ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Performed at Welcome Concert</div>
+                            <div class="activity-time">September 1, 2024 • 1 month ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Joined School Choir</div>
+                            <div class="activity-time">August 20, 2024 • 2 months ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Attended Book Discussion: "The Alchemist"</div>
+                            <div class="activity-time">August 10, 2024 • 2 months ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Achievements -->
+        <div class="tab-content" id="achievements-tab">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-trophy"></i>
+                        My Achievements
+                    </h3>
+                </div>
+                <div class="achievements-grid">
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">🎨</div>
+                        <div class="achievement-name">Creative Soul</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">🎵</div>
+                        <div class="achievement-name">Music Lover</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">📚</div>
+                        <div class="achievement-name">Bookworm</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">⭐</div>
+                        <div class="achievement-name">Rising Star</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">🤝</div>
+                        <div class="achievement-name">Team Player</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">💡</div>
+                        <div class="achievement-name">Innovator</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">🎭</div>
+                        <div class="achievement-name">Performer</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="achievement-icon">🌟</div>
+                        <div class="achievement-name">Dedicated</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Consolatrix Campus Club - ARSC Christ-Centered School Community</p>
+        <p>Empowering students to grow in faith, talent, and leadership</p>
+    </footer>
+
+    <script>
+        // Sidebar Functions
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                themeIconSidebar.className = 'fas fa-moon';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                themeIconSidebar.className = 'fas fa-sun';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Remove active class from all tabs and content
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // Menu Item Active State
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!this.classList.contains('theme-toggle-menu')) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        if (!i.classList.contains('theme-toggle-menu')) {
+                            i.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Form Submission
+        document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                yearLevel: document.getElementById('yearLevel').value,
+                department: document.getElementById('department').value,
+                bio: document.getElementById('bio').value,
+                interests: document.getElementById('interests').value
+            };
+            
+            console.log('Profile updated:', formData);
+            alert('Profile updated successfully!');
+        });
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>

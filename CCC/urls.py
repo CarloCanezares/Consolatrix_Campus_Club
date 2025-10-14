@@ -17,5 +17,6 @@ urlpatterns = [
     path('events/', views.events, name='events'),
     path('clubs/', views.clubs, name='clubs'),
     path('contact/', views.contact, name='contact'),
-    # Remove the duplicate: path('logout/', views.logout, name='logout'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/update/', views.profile_update, name='profile_update'),
 ]

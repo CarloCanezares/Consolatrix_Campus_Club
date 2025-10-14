@@ -321,7 +321,8 @@
             display: none;
         }
 
-        .form-control.invalid + .form-error {
+        .form-control.invalid + .form-error,
+        .form-control.invalid ~ .form-error {
             display: block;
         }
 
@@ -607,6 +608,19 @@
                     <div class="form-error">Please select your year level</div>
                 </div>
 
+                <div class="form-group">
+                    <label for="department">Department *</label>
+                    <select id="department" class="form-control" required>
+                        <option value="">Select your department</option>
+                        <option value="College of Arts and Sciences">College of Arts and Sciences</option>
+                        <option value="College of Education">College of Education</option>
+                        <option value="College of Business Administration">College of Business Administration</option>
+                        <option value="College of Information Technology">College of Information Technology</option>
+                        <option value="College of Engineering">College of Engineering</option>
+                    </select>
+                    <div class="form-error">Please select your department</div>
+                </div>
+
                 <div class="button-group">
                     <button type="button" class="btn btn-primary" id="nextStep1">
                         Next
@@ -810,7 +824,7 @@
             } else if (field.id === 'studentId') {
                 const idRegex = /^\d{4}-\d{5}$/;
                 isValid = idRegex.test(field.value);
-            } else if (field.id === 'phone') {
+            }else if (field.id === 'phone') {
                 const phoneRegex = /^\+?[\d\s-]{10,}$/;
                 isValid = phoneRegex.test(field.value);
             } else if (field.id === 'confirmPassword') {
@@ -947,6 +961,7 @@
                 lastName: document.getElementById('lastName').value,
                 studentId: document.getElementById('studentId').value,
                 yearLevel: document.getElementById('yearLevel').value,
+                department: document.getElementById('department').value,
                 email: document.getElementById('email').value,
                 password: document.getElementById('password').value,
                 phone: document.getElementById('phone').value,
@@ -996,7 +1011,7 @@
                 }
             })
             .catch(function(error) {
-                console.error('Error:', error);
+                console.error('Error:',error);
                 alert('Error: ' + error.message);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-check"></i> Create Account';
