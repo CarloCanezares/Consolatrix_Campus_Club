@@ -870,15 +870,15 @@
                 <i class="fas fa-home"></i>
                 Home
             </a>
-            <a href="#clubs" class="menu-item">
+            <a href="{% url 'clubs' %}" class="menu-item">
                 <i class="fas fa-users"></i>
                 Browse Clubs
             </a>
-            <a href="#events" class="menu-item">
+            <a href="{% url 'events' %}" class="menu-item">
                 <i class="fas fa-calendar-alt"></i>
                 Events
             </a>
-            <a href="#about" class="menu-item">
+            <a href="{% url 'aboutus' %}" class="menu-item">
                 <i class="fas fa-info-circle"></i>
                 About Us
             </a>
@@ -911,21 +911,22 @@
                 Leadership & Service
             </a>
             
-            <div class="menu-section">
+            < <div class="menu-section">
                 <div class="menu-section-title">Account</div>
+                <a href="{% url 'profile' %}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+                <a href="#settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="{% url 'contact' %}" class="menu-item">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
             </div>
-            <a href="#profile" class="menu-item">
-                <i class="fas fa-user"></i>
-                My Profile
-            </a>
-            <a href="#settings" class="menu-item">
-                <i class="fas fa-cog"></i>
-                Settings
-            </a>
-            <a href="{% url 'contact'%}" class="menu-item">
-                <i class="fas fa-envelope"></i>
-                Contact
-            </a>
+
             
             <div class="menu-section">
                 <div class="menu-section-title">Appearance</div>

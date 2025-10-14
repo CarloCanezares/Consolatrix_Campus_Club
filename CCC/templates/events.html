@@ -745,9 +745,9 @@
                 </a>
             </div>
             
-            <div class="menu-section">
+             <div class="menu-section">
                 <div class="menu-section-title">Account</div>
-                <a href="#profile" class="menu-item">
+                <a href="{% url 'profile' %}" class="menu-item">
                     <i class="fas fa-user"></i>
                     My Profile
                 </a>
@@ -755,11 +755,12 @@
                     <i class="fas fa-cog"></i>
                     Settings
                 </a>
-                <a href="{% url 'contact'%}" class="menu-item">
+                <a href="{% url 'contact' %}" class="menu-item">
                     <i class="fas fa-envelope"></i>
                     Contact
                 </a>
             </div>
+
 
             <div class="menu-section">
                 <div class="menu-section-title">Appearance</div>
