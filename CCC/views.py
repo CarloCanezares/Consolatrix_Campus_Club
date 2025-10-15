@@ -10,8 +10,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
 
+def trial(request):
+    return render(request, 'trial.html')
+
 def index(request):
     return render(request, 'index.html')
+
+def settings(request):
+    return render(request, 'settings.html')
 
 def sportsclub(request):
     return render(request, 'sportsclub.html')

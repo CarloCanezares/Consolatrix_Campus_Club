@@ -19,4 +19,6 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('profile/', views.profile, name='profile'),
     path('profile/update/', views.profile_update, name='profile_update'),
+    path('settings/', views.settings, name='settings'),  # New settings path
+    path('trial/', views.trial, name='trial'),  # New trial path
 ]

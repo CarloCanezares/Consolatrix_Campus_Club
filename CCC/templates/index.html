@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -621,8 +622,8 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#" class="logo">
-                <i class="fas fa-graduation-cap"></i>
+            <a href="{% url 'index' %}" class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" style="height:60px; width:auto;">
                 Consolatrix Campus
             </a>
             <div class="nav-buttons">
