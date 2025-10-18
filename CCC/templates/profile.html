@@ -1071,10 +1071,28 @@
                                         <div class="club-role">Active Member</div>
                                     </div>
                                     <span class="club-status active">Active</span>
+
+                                    <!-- Leave club button -->
+                                    <form class="leave-club-form" data-club-id="{{ club.id }}" style="margin-left:12px;">
+                                        {% csrf_token %}
+                                        <button type="button" class="action-btn leave-btn" title="Leave club" style="background:#fff;border:1px solid var(--border-color);padding:6px 8px;">
+                                            Leave
+                                        </button>
+                                    </form>
+
+                                    <!-- Delete club button visible to staff only -->
+                                    {% if user.is_staff %}
+                                    <form class="delete-club-form" data-club-id="{{ club.id }}" style="margin-left:8px;">
+                                        {% csrf_token %}
+                                        <button type="button" class="action-btn delete-btn" title="Delete club" style="background:#fff;border:1px solid var(--border-color);padding:6px 8px;color:var(--accent-red);">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    {% endif %}
                                 </div>
                                 {% endfor %}
                             {% else %}
-                                <p class="no-data">You haven't joined any clubs yet</p>
+                                <p class="no-data">You haven't joined any clubs yet. <a href="{% url 'clubs' %}">Browse clubs</a> to get started!</p>
                             {% endif %}
                         </div>
                         
@@ -1204,6 +1222,24 @@
                                 <div class="club-role">Active Member</div>
                             </div>
                             <span class="club-status active">Active</span>
+
+                            <!-- Leave club button -->
+                            <form class="leave-club-form" data-club-id="{{ club.id }}" style="margin-left:12px;">
+                                {% csrf_token %}
+                                <button type="button" class="action-btn leave-btn" title="Leave club" style="background:#fff;border:1px solid var(--border-color);padding:6px 8px;">
+                                    Leave
+                                </button>
+                            </form>
+
+                            <!-- Delete club button visible to staff only -->
+                            {% if user.is_staff %}
+                            <form class="delete-club-form" data-club-id="{{ club.id }}" style="margin-left:8px;">
+                                {% csrf_token %}
+                                <button type="button" class="action-btn delete-btn" title="Delete club" style="background:#fff;border:1px solid var(--border-color);padding:6px 8px;color:var(--accent-red);">
+                                    Delete
+                                </button>
+                            </form>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     {% else %}
@@ -1393,5 +1429,65 @@
             }
         });
     </script>
+    <script>
+(function(){
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    const csrftoken = getCookie('csrftoken') || '';
+
+    // Leave club
+    document.querySelectorAll('.leave-club-form .leave-btn').forEach(btn=>{
+        btn.addEventListener('click', async function(e){
+            const form = this.closest('.leave-club-form');
+            const clubId = form.getAttribute('data-club-id');
+            if (!confirm('Are you sure you want to leave this club?')) return;
+            try {
+                const resp = await fetch(`/club/${clubId}/leave/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrftoken, 'X-Requested-With': 'XMLHttpRequest'},
+                });
+                const data = await resp.json();
+                if (resp.ok && data.success) {
+                    alert(data.message || 'Left club.');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Error leaving club.');
+                }
+            } catch(err) {
+                console.error(err);
+                alert('Error leaving club. Try again.');
+            }
+        });
+    });
+
+    // Delete club (staff)
+    document.querySelectorAll('.delete-club-form .delete-btn').forEach(btn=>{
+        btn.addEventListener('click', async function(e){
+            const form = this.closest('.delete-club-form');
+            const clubId = form.getAttribute('data-club-id');
+            if (!confirm('This will permanently delete the club and all related data. Continue?')) return;
+            try {
+                const resp = await fetch(`/club/${clubId}/delete/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrftoken, 'X-Requested-With': 'XMLHttpRequest'},
+                });
+                const data = await resp.json();
+                if (resp.ok && data.success) {
+                    alert(data.message || 'Club deleted.');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Error deleting club.');
+                }
+            } catch(err) {
+                console.error(err);
+                alert('Error deleting club. Try again.');
+            }
+        });
+    });
+})();
+</script>
 </body>
 </html>

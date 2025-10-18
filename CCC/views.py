@@ -297,6 +297,20 @@ def profile_update(request):
     messages.success(request, 'Profile updated successfully')
     return redirect('profile')
 
+@login_required
+@require_http_methods(["POST"])
+def leave_club(request, club_id):
+    """
+    Allow a user to leave a club (remove self from club.members).
+    Accepts POST only. Returns JSON.
+    """
+    club = get_object_or_404(Club, pk=club_id)
+    if request.user in club.members.all():
+        club.members.remove(request.user)
+        return JsonResponse({'success': True, 'message': 'You have left the club.'})
+    return JsonResponse({'success': False, 'message': 'You are not a member of this club.'}, status=400)
+
+
 @staff_member_required
 def admin_dashboard(request):
     """Admin dashboard view with statistics"""
@@ -345,3 +359,14 @@ def application_action(request, pk, action):
             app.save()
 
     return JsonResponse({'success': True, 'status': app.status, 'application_id': app.id})
+
+@staff_member_required
+@require_http_methods(["POST"])
+def delete_club(request, club_id):
+    """
+    Allow staff/admin to delete a club. Accepts POST only.
+    """
+    club = get_object_or_404(Club, pk=club_id)
+    name = club.name
+    club.delete()
+    return JsonResponse({'success': True, 'message': f'Club "{name}" deleted.'})
