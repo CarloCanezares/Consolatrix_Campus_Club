@@ -1439,24 +1439,47 @@
         }
 
         // Theme Toggle
-        function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            const themeIconSidebar = document.getElementById('theme-icon-sidebar');
-            const themeText = document.getElementById('theme-text');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                themeIcon.className = 'fas fa-moon';
-                themeIconSidebar.className = 'fas fa-moon';
-                themeText.textContent = 'Dark Mode';
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                themeIcon.className = 'fas fa-sun';
-                themeIconSidebar.className = 'fas fa-sun';
-                themeText.textContent = 'Light Mode';
-            }
+        (function(){
+      const THEME_KEY = 'ccc_theme';
+      function setIconsAndText(isDark){
+        document.querySelectorAll('#theme-icon, #theme-icon-sidebar').forEach(el=>{
+          if(!el) return;
+          el.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        });
+        const txt = document.getElementById('theme-text');
+        if(txt) txt.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+      }
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          document.body.setAttribute('data-theme', 'dark');
+          setIconsAndText(true);
+        } else {
+          document.body.removeAttribute('data-theme');
+          setIconsAndText(false);
         }
+      }
+      function toggleThemeAndSave() {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const next = isDark ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+      }
+      function init() {
+        try {
+          const saved = localStorage.getItem(THEME_KEY);
+          if (saved) applyTheme(saved);
+        } catch (e) {}
+        document.querySelectorAll('.theme-toggle, .theme-toggle-menu').forEach(btn=>{
+          btn.removeEventListener('click', toggleThemeAndSave);
+          btn.addEventListener('click', toggleThemeAndSave);
+        });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
 
         // Modal Functions
         function openModal(position) {
