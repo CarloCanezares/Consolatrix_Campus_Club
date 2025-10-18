@@ -129,8 +129,9 @@ LOGOUT_REDIRECT_URL = '/signin/'   # where to go after logout
 
 # Add these lines so Django uses your custom User and email backend
 AUTH_USER_MODEL = 'CCC.User'
+
 AUTHENTICATION_BACKENDS = [
-    'CCC.auth.EmailBackend',                     # your email backend
-    'django.contrib.auth.backends.ModelBackend', # fallback
+    'CCC.auth.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 

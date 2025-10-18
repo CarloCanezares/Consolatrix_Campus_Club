@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .models import User
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.http import JsonResponse, HttpResponseBadRequest
-import json
-import uuid
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.hashers import make_password
-from django.db import IntegrityError
-
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.utils.text import slugify
+from django.utils import timezone
+from django.db.models import Count
+from .models import Club, ClubApplication, User  # Import models instead of defining them
+import json
 def trial(request):
     return render(request, 'trial.html')
 
@@ -78,171 +80,64 @@ def signin(request):
 
 @ensure_csrf_cookie
 def signup(request):
-    """
-    Accepts JSON (fetch) or regular form POST.
-    Validates unique student_id and email before creating user.
-    Returns JSON on fetch clients, otherwise renders template with messages.
-    """
     if request.method != 'POST':
         return render(request, 'signup.html')
 
-    # support both JSON and form POST
+    # Handle both JSON and form data
     if request.content_type == 'application/json':
         try:
-            data = json.loads(request.body.decode('utf-8') if isinstance(request.body, (bytes, bytearray)) else request.body)
-        except Exception:
-            data = {}
-        get = lambda k, default=None: data.get(k, default)
-        is_json = True
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON data'}, status=400)
     else:
-        get = lambda k, default=None: request.POST.get(k, default)
-        is_json = False
+        data = request.POST
 
-    # parse incoming values and normalize
-    email = str((get('email') or '')).strip().lower()
-    password = get('password') or ''
-    first_name = get('firstName') or ''
-    last_name = get('lastName') or ''
-    raw_student_id = get('studentId') or get('student_id') or ''
-    # normalize student_id to string and strip whitespace, convert to uppercase
-    student_id = str(raw_student_id).strip().upper()
-    year_level = get('yearLevel') or None
-    department = get('department') or ''
-    phone = get('phone') or ''
-    bio = get('bio') or ''
-    interests = get('interests') or []
-    newsletter = get('newsletter') in (True, 'true', 'on', '1', 'True')
-
-    print(f"DEBUG: Processing signup for student_id: {student_id}")
+    email = data.get('email', '').strip()
+    password = data.get('password', '')
+    first_name = data.get('firstName', '')
+    last_name = data.get('lastName', '')
+    student_id = data.get('studentId', '')
 
     # Basic validation
     if not email or not password:
-        msg = "Email and password are required."
-        if is_json:
-            return JsonResponse({'success': False, 'message': msg}, status=400)
-        messages.error(request, msg)
-        return render(request, 'signup.html', {'email': email})
+        return JsonResponse({
+            'success': False,
+            'message': 'Email and password are required.'
+        }, status=400)
 
-    # Enhanced student ID validation
-    if not student_id:
-        msg = "Student ID is required."
-        if is_json:
-            return JsonResponse({'success': False, 'message': msg}, status=400)
-        messages.error(request, msg)
-        return render(request, 'signup.html', {'email': email})
-
-    # Validate student ID format (YYYY-XXXXX)
-    import re
-    student_id_pattern = re.compile(r'^\d{4}-\d{5}$')
-    if not student_id_pattern.match(student_id):
-        msg = "Student ID must be in format: YYYY-XXXXX (e.g., 2024-12345)"
-        if is_json:
-            return JsonResponse({'success': False, 'message': msg}, status=400)
-        messages.error(request, msg)
-        return render(request, 'signup.html', {'email': email, 'student_id': student_id})
-
-    # Check uniqueness - use exact match since we normalized to uppercase
     try:
-        if User.objects.filter(student_id=student_id).exists():
-            existing_user = User.objects.get(student_id=student_id)
-            msg = f"Student ID {student_id} is already registered with email: {existing_user.email}"
-            print(f"DEBUG: Student ID conflict - {student_id} exists for {existing_user.email}")
-            if is_json:
-                return JsonResponse({'success': False, 'message': msg}, status=400)
-            messages.error(request, msg)
-            return render(request, 'signup.html', {'email': email, 'student_id': student_id})
+        # Check if user already exists
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({
+                'success': False,
+                'message': 'An account with this email already exists.'
+            }, status=400)
 
-        if User.objects.filter(email__iexact=email).exists():
-            msg = "An account with this email already exists."
-            if is_json:
-                return JsonResponse({'success': False, 'message': msg}, status=400)
-            messages.error(request, msg)
-            return render(request, 'signup.html', {'email': email})
-
-    except Exception as e:
-        print(f"DEBUG: Error checking uniqueness: {e}")
-        msg = "Error checking account availability. Please try again."
-        if is_json:
-            return JsonResponse({'success': False, 'message': msg}, status=400)
-        messages.error(request, msg)
-        return render(request, 'signup.html', {'email': email})
-
-    # Create user
-    try:
+        # Create new user
         user = User.objects.create_user(
             email=email,
             password=password,
             username=email,  # Use email as username
             first_name=first_name,
             last_name=last_name,
-            student_id=student_id,  # Use the normalized student_id
+            student_id=student_id
         )
 
-        # Assign optional fields
-        try:
-            user.year_level = int(year_level) if year_level else None
-        except (ValueError, TypeError):
-            user.year_level = None
+        # Log the user in
+        login(request, authenticate(request, username=email, password=password))
 
-        user.department = department
-        user.phone = phone
-        user.bio = bio
-        
-        # Normalize interests
-        if isinstance(interests, str):
-            try:
-                interests = json.loads(interests)
-            except Exception:
-                interests = [s.strip() for s in interests.split(',') if s.strip()]
-        user.interests = interests
-        user.newsletter = newsletter
-        
-        user.save()
-        print(f"DEBUG: Successfully created user: {user.email} with student_id: {user.student_id}")
-
-    except IntegrityError as e:
-        print(f"DEBUG: IntegrityError during user creation: {e}")
-        # Check what specific constraint failed
-        if 'student_id' in str(e).lower():
-            msg = f"Student ID {student_id} is already in use. Please use a different Student ID."
-        elif 'email' in str(e).lower():
-            msg = "An account with this email already exists."
-        else:
-            msg = "Error creating account. Please try again."
-        
-        if is_json:
-            return JsonResponse({'success': False, 'message': msg}, status=400)
-        messages.error(request, msg)
-        return render(request, 'signup.html', {'email': email})
-
-    except Exception as e:
-        print(f"DEBUG: Unexpected error during user creation: {e}")
-        msg = "An unexpected error occurred. Please try again."
-        if is_json:
-            return JsonResponse({'success': False, 'message': msg}, status=400)
-        messages.error(request, msg)
-        return render(request, 'signup.html', {'email': email})
-
-    # Authenticate and login
-    auth_user = authenticate(request, username=email, password=password)
-    if auth_user is not None:
-        login(request, auth_user)
-        print(f"DEBUG: Successfully authenticated and logged in user: {auth_user.email}")
-    else:
-        # Fallback
-        user.backend = 'django.contrib.auth.backends.ModelBackend'
-        login(request, user)
-        print(f"DEBUG: Used fallback login for user: {user.email}")
-
-    if is_json:
         return JsonResponse({
-            'success': True, 
-            'message': 'Account created successfully',
+            'success': True,
+            'message': 'Account created successfully!',
             'redirect': '/home/'
         })
-    
-    messages.success(request, "Account created successfully.")
-    return redirect('home')
+
+    except Exception as e:
+        print(f"Registration error: {str(e)}")  # For debugging
+        return JsonResponse({
+            'success': False,
+            'message': f'Error creating account: {str(e)}'
+        }, status=500)
 
 def signout(request):
     logout(request)
@@ -261,70 +156,162 @@ def clubs(request):
 def contact(request):
     return render(request, 'contact.html')
 
+@login_required
+@require_http_methods(["POST"])
+def apply_club(request, club_slug=None):
+    """
+    Accepts the existing form (unchanged). Creates the Club if missing,
+    creates a ClubApplication and returns JSON for the current frontend alert.
+    Works when URL provides club_slug or when the form sends 'club_type' or 'club_slug'.
+    """
+    # determine slug/name from URL or form fields (support legacy forms)
+    form_slug = request.POST.get('club_slug') or request.POST.get('club_type') or request.POST.get('club')
+    source = club_slug or form_slug or ''
+    source = str(source).strip()
+    if not source:
+        return JsonResponse({'success': False, 'message': 'No club specified.'}, status=400)
+
+    # normalize slug and pretty name
+    raw = source.lower().replace(' ', '-')
+    slug = slugify(raw)
+    if slug.endswith('-club'):
+        pretty = source.replace('-', ' ').title()
+    else:
+        pretty = (source.replace('-', ' ').title())
+    try:
+        club, created = Club.objects.get_or_create(
+            slug=slug,
+            defaults={'name': pretty if pretty else slug.title() + ' Club' }
+        )
+
+        # prevent duplicate pending or approved applications
+        exists = ClubApplication.objects.filter(user=request.user, club=club).exclude(status=ClubApplication.STATUS_REJECTED).exists()
+        if exists:
+            return JsonResponse({
+                'success': False,
+                'message': f'You already have an active application or membership for {club.name}.'
+            })
+
+        # create application using any message/fields submitted by the form
+        message = request.POST.get('message', '') or request.POST.get('content', '')
+        app = ClubApplication.objects.create(
+            user=request.user,
+            club=club,
+            message=message,
+            status=ClubApplication.STATUS_PENDING
+        )
+
+        return JsonResponse({
+            'success': True,
+            'message': f'Application submitted succesfuly for {club.name}.\nwe\'ll review your application and contact you within 3-5 business days. check your email for updates.'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error submitting application: {str(e)}'}, status=500)
+
+
+@login_required
 def profile(request):
-    # require login
-    if not request.user.is_authenticated:
-        return redirect('signin')
-
+    """
+    Provide profile context expected by templates:
+    - active_clubs: clubs where user is a member
+    - pending_applications: user's pending applications
+    - approved_applications / rejected_applications for display
+    """
     user = request.user
-
-    # try to read related clubs if your models define them
-    active_clubs = []
-    if hasattr(user, 'clubs'):
-        try:
-            active_clubs = user.clubs.all()
-        except Exception:
-            active_clubs = []
-
+    active_clubs = user.clubs.all()  # uses ManyToMany related_name='clubs'
+    all_apps = ClubApplication.objects.filter(user=user).select_related('club').order_by('-created_at')
     context = {
-        'user': user,  # Changed from 'user_obj' to 'user'
+        'user': user,
         'active_clubs': active_clubs,
+        'pending_applications': all_apps.filter(status=ClubApplication.STATUS_PENDING),
+        'approved_applications': all_apps.filter(status=ClubApplication.STATUS_APPROVED),
+        'rejected_applications': all_apps.filter(status=ClubApplication.STATUS_REJECTED),
     }
     return render(request, 'profile.html', context)
 
+
 @login_required
-@ensure_csrf_cookie
+@require_http_methods(["POST"])
 def profile_update(request):
-    if request.method == 'POST':
+    """
+    Update current user's profile. Supports form POST and JSON.
+    Returns JSON when request is JSON, otherwise redirects back to profile.
+    """
+    user = request.user
+
+    # parse input
+    if request.content_type == 'application/json':
         try:
-            if request.content_type == 'application/json':
-                data = json.loads(request.body.decode('utf-8') if isinstance(request.body, (bytes, bytearray)) else request.body)
-            else:
-                data = request.POST
-            
-            user = request.user
-            
-            # Update user fields
-            full_name = data.get('fullName', '')
-            if full_name:
-                name_parts = full_name.split(' ', 1)
-                user.first_name = name_parts[0]
-                user.last_name = name_parts[1] if len(name_parts) > 1 else ''
-            
-            user.phone = data.get('phone', '')
-            user.bio = data.get('bio', '')
-            user.department = data.get('department', '')
-            
-            # Update year level
-            year_level = data.get('yearLevel')
-            if year_level:
-                try:
-                    user.year_level = int(year_level)
-                except:
-                    pass
-            
-            # Update interests
-            interests = data.get('interests', '')
-            if isinstance(interests, str):
-                user.interests = [i.strip() for i in interests.split(',') if i.strip()]
-            else:
-                user.interests = interests
-            
-            user.save()
-            
-            return JsonResponse({'success': True, 'message': 'Profile updated successfully'})
-        
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)}, status=400)
-    
-    return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+            data = json.loads(request.body)
+        except Exception:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON'}, status=400)
+    else:
+        data = request.POST
+
+    # update common fields (safe — leave unchanged if not provided)
+    user.first_name = data.get('first_name') or data.get('firstName') or user.first_name
+    user.last_name = data.get('last_name') or data.get('lastName') or user.last_name
+    # optional custom fields
+    if hasattr(user, 'student_id'):
+        user.student_id = data.get('student_id') or data.get('studentId') or getattr(user, 'student_id', '')
+    if hasattr(user, 'phone'):
+        user.phone = data.get('phone', getattr(user, 'phone', ''))
+    if hasattr(user, 'bio'):
+        user.bio = data.get('bio', getattr(user, 'bio', ''))
+
+    user.save()
+
+    if request.content_type == 'application/json':
+        return JsonResponse({'success': True, 'message': 'Profile updated'})
+    messages.success(request, 'Profile updated successfully')
+    return redirect('profile')
+
+
+@staff_member_required
+def admin_dashboard(request):
+    """Admin dashboard view with statistics"""
+    context = {
+        'total_applications': ClubApplication.objects.count(),
+        'pending_applications': ClubApplication.objects.filter(status='PENDING').count(),
+        'total_clubs': Club.objects.count(),
+        'total_members': Club.objects.aggregate(total=Count('members'))['total'] or 0,
+        'recent_applications': ClubApplication.objects.select_related('user', 'club').order_by('-created_at')[:10]
+    }
+    return render(request, 'admin_dashboard.html', context)
+
+@staff_member_required
+def club_applications_list(request):
+    """Staff view for managing applications"""
+    applications = ClubApplication.objects.select_related('user', 'club').order_by('-created_at')
+    context = {
+        'applications': applications,
+        'pending_count': applications.filter(status='PENDING').count()
+    }
+    return render(request, 'admin_applications.html', context)
+
+@staff_member_required
+@require_http_methods(["POST"])
+def application_action(request, pk, action):
+    """
+    Approve or reject an application (called from staff UI).
+    Expects POST. Returns JSON with updated status.
+    """
+    app = get_object_or_404(ClubApplication, pk=pk)
+    if action not in ('approve', 'reject'):
+        return JsonResponse({'success': False, 'message': 'Invalid action'}, status=400)
+
+    if action == 'approve':
+        if app.status != ClubApplication.STATUS_APPROVED:
+            app.status = ClubApplication.STATUS_APPROVED
+            app.reviewed_at = timezone.now()
+            app.reviewer = request.user
+            app.save()
+            app.club.members.add(app.user)
+    else:
+        if app.status != ClubApplication.STATUS_REJECTED:
+            app.status = ClubApplication.STATUS_REJECTED
+            app.reviewed_at = timezone.now()
+            app.reviewer = request.user
+            app.save()
+
+    return JsonResponse({'success': True, 'status': app.status, 'application_id': app.id})

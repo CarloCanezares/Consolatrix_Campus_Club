@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Applications - Admin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #283593;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+
+        .status-PENDING {
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-APPROVED {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-REJECTED {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 0.9em;
+        }
+
+        .btn-approve {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-reject {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Club Applications</h1>
+            <div class="nav-links">
+                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+                <a href="{% url 'home' %}">Back to Site</a>
+            </div>
+        </div>
+
+        {% if applications %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Club</th>
+                        <th>Applied On</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr id="app-{{ app.id }}">
+                        <td>
+                            {{ app.user.get_full_name|default:app.user.email }}
+                            <div style="font-size: 0.85em; color: #666;">
+                                {{ app.user.email }}
+                            </div>
+                        </td>
+                        <td>{{ app.club.name }}</td>
+                        <td>{{ app.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="status status-{{ app.status }}">
+                                {{ app.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if app.status == 'PENDING' %}
+                                <button 
+                                    class="btn btn-approve" 
+                                    onclick="handleAction({{ app.id }}, 'approve')"
+                                >
+                                    Approve
+                                </button>
+                                <button 
+                                    class="btn btn-reject" 
+                                    onclick="handleAction({{ app.id }}, 'reject')"
+                                >
+                                    Reject
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <h3>No applications found</h3>
+                <p>When students apply to clubs, their applications will appear here.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        async function handleAction(applicationId, action) {
+            if (!confirm(`Are you sure you want to ${action} this application?`)) {
+                return;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+            try {
+                const response = await fetch(`/staff/applications/${applicationId}/${action}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // Update UI
+                    const row = document.getElementById(`app-${applicationId}`);
+                    const statusCell = row.querySelector('.status');
+                    statusCell.className = `status status-${data.status}`;
+                    statusCell.textContent = data.status;
+                    
+                    // Remove action buttons
+                    const actionCell = row.querySelector('td:last-child');
+                    actionCell.innerHTML = '';
+                    
+                    // Optional: show success message
+                    alert(`Application ${action}ed successfully`);
+                } else {
+                    alert('Error processing application');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing application');
+            }
+        }
+    </script>
+</body>
+</html>

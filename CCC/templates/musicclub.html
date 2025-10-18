@@ -1283,28 +1283,62 @@
         });
 
         // Form Submission
-        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Get form data
-            const formData = {
-                music: selectedMusic,
-                fullName: document.getElementById('fullName').value,
-                studentId: document.getElementById('studentId').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                yearLevel: document.getElementById('yearLevel').value,
-                experience: document.getElementById('experience').value,
-                instrument: document.getElementById('instrument').value,
-                whyJoin: document.getElementById('whyJoin').value
-            };
-            
-            console.log('Application submitted:', formData);
-            
-            // Show success message
-            alert(`Application submitted successfully for ${selectedMusic}!\n\nThank you for your interest in joining our musical community! We'll review your application and contact you within 3-5 business days.\n\nKeep making beautiful music!`);
-            
-            closeModal();
+
+            // collect values (UI unchanged)
+            const fullName = document.getElementById('fullName').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const yearLevel = document.getElementById('yearLevel').value;
+            const experience = document.getElementById('experience').value;
+            const instrument = document.getElementById('instrument').value.trim();
+            const whyJoin = document.getElementById('whyJoin').value.trim();
+
+            // prepare message for admin review
+            const message = [
+                `Group: ${selectedMusic}`,
+                `Name: ${fullName}`,
+                `Student ID: ${studentId}`,
+                `Email: ${email}`,
+                `Phone: ${phone}`,
+                `Year Level: ${yearLevel}`,
+                `Experience: ${experience}`,
+                `Instrument/Voice: ${instrument}`,
+                `Why Join: ${whyJoin}`
+            ].join('\n');
+
+            const payload = new FormData();
+            payload.append('club_type', selectedMusic || '');
+            payload.append('message', message);
+
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            const csrftoken = getCookie('csrftoken') || '';
+
+            try {
+                const resp = await fetch('/apply/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': csrftoken },
+                    body: payload
+                });
+
+                const data = await resp.json().catch(() => ({ success: false, message: 'Invalid server response' }));
+
+                if (resp.ok && data.success) {
+                    alert(data.message || `Application submitted successfully for ${selectedMusic}!\n\nWe'll review your application and contact you within 3-5 business days.`);
+                    closeModal();
+                } else {
+                    alert(data.message || 'Error submitting application. Please try again.');
+                }
+            } catch (err) {
+                console.error('Submit error', err);
+                alert('Error submitting application. Please try again.');
+            }
         });
 
         // Close modal on escape key

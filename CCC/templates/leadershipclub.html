@@ -1516,31 +1516,69 @@
         });
 
         // Form Submission
-        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Get form data
-            const formData = {
-                position: selectedPosition,
-                fullName: document.getElementById('fullName').value,
-                studentId: document.getElementById('studentId').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                yearLevel: document.getElementById('yearLevel').value,
-                leadership: document.getElementById('leadership').value,
-                positions: document.getElementById('positions').value,
-                whyApply: document.getElementById('whyApply').value,
-                goals: document.getElementById('goals').value,
-                availability: document.getElementById('availability').value,
-                qualifications: document.getElementById('qualifications').value
-            };
-            
-            console.log('Leadership application submitted:', formData);
-            
-            // Show success message
-            alert(`Application submitted successfully for ${selectedPosition}!\n\nThank you for your interest in serving our school community! We'll review your application and contact you within 5-7 business days for the next steps in the selection process.\n\nTogether we lead and serve!`);
-            
-            closeModal();
+
+            // collect values (UI unchanged)
+            const fullName = document.getElementById('fullName').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const yearLevel = document.getElementById('yearLevel').value;
+            const leadership = document.getElementById('leadership').value;
+            const positions = document.getElementById('positions').value.trim();
+            const whyApply = document.getElementById('whyApply').value.trim();
+            const goals = document.getElementById('goals').value.trim();
+            const availability = document.getElementById('availability').value.trim();
+            const qualifications = document.getElementById('qualifications').value.trim();
+
+            // prepare message for admin review
+            const message = [
+                `Position: ${selectedPosition}`,
+                `Name: ${fullName}`,
+                `Student ID: ${studentId}`,
+                `Email: ${email}`,
+                `Phone: ${phone}`,
+                `Year Level: ${yearLevel}`,
+                `Leadership Experience: ${leadership}`,
+                `Previous Positions: ${positions}`,
+                `Why Apply: ${whyApply}`,
+                `Goals: ${goals}`,
+                `Availability: ${availability}`,
+                `Qualifications: ${qualifications}`
+            ].join('\n');
+
+            const payload = new FormData();
+            payload.append('club_type', selectedPosition || '');
+            payload.append('message', message);
+
+            // read CSRF token from cookie
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            const csrftoken = getCookie('csrftoken') || '';
+
+            try {
+                const resp = await fetch('/apply/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': csrftoken },
+                    body: payload
+                });
+
+                const data = await resp.json().catch(() => ({ success: false, message: 'Invalid server response' }));
+
+                if (resp.ok && data.success) {
+                    alert(data.message || `Application submitted successfully for ${selectedPosition}!\n\nThank you for your interest in serving our school community! We'll review your application and contact you within 5-7 business days.`);
+                    closeModal();
+                } else {
+                    alert(data.message || 'Error submitting application. Please try again.');
+                }
+            } catch (err) {
+                console.error('Submit error', err);
+                alert('Error submitting application. Please try again.');
+            }
         });
 
         // Close modal on escape key

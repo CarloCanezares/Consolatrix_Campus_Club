@@ -1439,26 +1439,62 @@
         });
 
         // Form Submission
-        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            const formData = {
-                sport: selectedSport,
-                fullName: document.getElementById('fullName').value,
-                studentId: document.getElementById('studentId').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                yearLevel: document.getElementById('yearLevel').value,
-                experience: document.getElementById('experience').value,
-                whyJoin: document.getElementById('whyJoin').value,
-                availability: document.getElementById('availability').value
-            };
-            
-            console.log('Application submitted:', formData);
-            
-            alert(`Application submitted successfully for ${selectedSport}!\n\nWe'll review your application and contact you within 3-5 business days. Check your email for updates!`);
-            
-            closeModal();
+            // collect values (form fields kept unchanged)
+            const fullName = document.getElementById('fullName').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const yearLevel = document.getElementById('yearLevel').value;
+            const experience = document.getElementById('experience').value;
+            const whyJoin = document.getElementById('whyJoin').value.trim();
+            const availability = document.getElementById('availability').value.trim();
+
+            // prepare payload - server expects 'club_type' or 'club' and 'message'
+            const payload = new FormData();
+            payload.append('club_type', selectedSport || '');
+            // Put useful details into a single message field for review in admin panel
+            const message = [
+                `Name: ${fullName}`,
+                `Student ID: ${studentId}`,
+                `Email: ${email}`,
+                `Phone: ${phone}`,
+                `Year Level: ${yearLevel}`,
+                `Experience: ${experience}`,
+                `Why Join: ${whyJoin}`,
+                `Availability: ${availability}`
+            ].join('\n');
+            payload.append('message', message);
+
+            // helper to read csrftoken from cookies
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            const csrftoken = getCookie('csrftoken');
+
+            try {
+                const resp = await fetch('/apply/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken || ''
+                    },
+                    body: payload
+                });
+                const data = await resp.json().catch(() => ({ success: false, message: 'Invalid server response' }));
+                if (resp.ok && data.success) {
+                    // show server message (keeps your existing alert copy)
+                    alert(data.message || `Application submitted successfully for ${selectedSport}!\n\nWe'll review your application and contact you within 3-5 business days. Check your email for updates!`);
+                    closeModal();
+                } else {
+                    alert(data.message || 'Error submitting application. Please try again.');
+                }
+            } catch (err) {
+                console.error('Submit error', err);
+                alert('Error submitting application. Please try again.');
+            }
         });
 
         // Close modal on escape key

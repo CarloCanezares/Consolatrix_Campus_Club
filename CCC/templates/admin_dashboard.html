@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Consolatrix Campus Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #283593;
+            --accent: #ffc107;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --text: #333;
+            --bg: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            display: block;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--secondary);
+        }
+
+        .sidebar-menu a.active {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: var(--text);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .applications-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-approved {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-rejected {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-approve {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-reject {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Dashboard</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{% url 'admin_dashboard' %}" class="active">
+                    <i class="fas fa-home"></i> Dashboard
+                </a></li>
+                <li><a href="{% url 'admin_applications' %}">
+                    <i class="fas fa-clipboard-list"></i> Applications
+                </a></li>
+                <li><a href="{% url 'admin:index' %}">
+                    <i class="fas fa-cog"></i> Django Admin
+                </a></li>
+                <li><a href="{% url 'home' %}">
+                    <i class="fas fa-arrow-left"></i> Back to Site
+                </a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Dashboard Overview</h1>
+                <div class="user-info">
+                    Welcome, {{ request.user.get_full_name|default:request.user.email }}
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Applications</h3>
+                    <div class="number">{{ total_applications }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Applications</h3>
+                    <div class="number">{{ pending_applications }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Clubs</h3>
+                    <div class="number">{{ total_clubs }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Members</h3>
+                    <div class="number">{{ total_members }}</div>
+                </div>
+            </div>
+
+            <div class="applications-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Club</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in recent_applications %}
+                        <tr id="app-{{ application.id }}">
+                            <td>
+                                {{ application.user.get_full_name|default:application.user.email }}
+                                <div style="font-size: 0.875rem; color: #666;">
+                                    {{ application.user.email }}
+                                </div>
+                            </td>
+                            <td>{{ application.club.name }}</td>
+                            <td>{{ application.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="status-badge status-{{ application.status|lower }}">
+                                    {{ application.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if application.status == 'PENDING' %}
+                                <button class="btn btn-approve" onclick="handleAction({{ application.id }}, 'approve')">
+                                    Approve
+                                </button>
+                                <button class="btn btn-reject" onclick="handleAction({{ application.id }}, 'reject')">
+                                    Reject
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        async function handleAction(applicationId, action) {
+            if (!confirm(`Are you sure you want to ${action} this application?`)) {
+                return;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+            try {
+                const response = await fetch(`/staff/applications/${applicationId}/${action}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // Update UI
+                    const row = document.getElementById(`app-${applicationId}`);
+                    const statusCell = row.querySelector('.status-badge');
+                    statusCell.className = `status-badge status-${data.status.toLowerCase()}`;
+                    statusCell.textContent = data.status;
+                    
+                    // Remove action buttons
+                    const actionsCell = row.querySelector('td:last-child');
+                    actionsCell.innerHTML = '';
+                    
+                    // Optional: reload page after short delay
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    alert('Error processing application');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing application');
+            }
+        }
+    </script>
+</body>
+</html>

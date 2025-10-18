@@ -1459,18 +1459,67 @@
         }
 
         // Form Submission
-        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-            
-            alert('Application submitted successfully! We will contact you soon.');
-            closeModal();
-            this.reset();
+
+            // Get club name from modal title set by openModal()
+            const modalTitle = document.getElementById('modalTitle').textContent || '';
+            // modalTitle is like "Join <Club Name>" -> extract the club name
+            const clubName = modalTitle.replace(/^Join\s+/i, '').trim();
+
+            // Collect form values (UI unchanged)
+            const fullName = document.getElementById('studentName').value.trim();
+            const email = document.getElementById('studentEmail').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+            const yearLevel = document.getElementById('yearLevel').value;
+            const experience = document.getElementById('experience').value.trim();
+
+            // Build a single message payload so admin sees all details in one field
+            const message = [
+                `Club: ${clubName}`,
+                `Name: ${fullName}`,
+                `Email: ${email}`,
+                `Student ID: ${studentId}`,
+                `Year Level: ${yearLevel}`,
+                `Experience: ${experience}`
+            ].join('\n');
+
+            // Prepare FormData expected by the server
+            const payload = new FormData();
+            payload.append('club_type', clubName);
+            payload.append('message', message);
+
+            // Read CSRF token from cookie
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            const csrftoken = getCookie('csrftoken') || '';
+
+            try {
+                const resp = await fetch('/apply/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: payload
+                });
+
+                const data = await resp.json().catch(() => ({ success: false, message: 'Invalid server response' }));
+
+                if (resp.ok && data.success) {
+                    // keep the same UX text you already use
+                    alert(data.message || 'Application submitted successfully! We will contact you soon.');
+                    closeModal();
+                    this.reset();
+                } else {
+                    alert(data.message || 'Error submitting application. Please try again.');
+                }
+            } catch (err) {
+                console.error('Submit error', err);
+                alert('Error submitting application. Please try again.');
+            }
         });
 
         // Smooth scrolling for anchor links
