@@ -14,6 +14,10 @@ from .models import Club, ClubApplication, User  # Import models instead of defi
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 import json
+from django.contrib.auth import get_user_model, update_session_auth_hash
+
+User = get_user_model()
+
 def trial(request):
     return render(request, 'trial.html')
 
@@ -370,3 +374,75 @@ def delete_club(request, club_id):
     name = club.name
     club.delete()
     return JsonResponse({'success': True, 'message': f'Club "{name}" deleted.'})
+
+@login_required
+@require_http_methods(["POST"])
+def settings_update_general(request):
+    """
+    Accepts JSON body { displayName, email, phone } or form POST.
+    Returns JSON.
+    """
+    try:
+        payload = json.loads(request.body.decode()) if request.body else request.POST
+    except Exception:
+        payload = request.POST
+
+    user = request.user
+    display_name = payload.get('displayName') or payload.get('display_name')
+    email = payload.get('email')
+    phone = payload.get('phone')
+
+    if display_name:
+        parts = display_name.strip().split(None, 1)
+        user.first_name = parts[0]
+        user.last_name = parts[1] if len(parts) > 1 else ''
+
+    if email:
+        # prevent duplicate email
+        if User.objects.filter(email=email).exclude(pk=user.pk).exists():
+            return JsonResponse({'success': False, 'message': 'Email already in use.'}, status=400)
+        user.email = email
+
+    if hasattr(user, 'phone'):
+        user.phone = phone or getattr(user, 'phone', '')
+
+    try:
+        user.save()
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error saving: {str(e)}'}, status=500)
+
+    return JsonResponse({'success': True, 'message': 'Settings saved successfully'})
+
+@login_required
+@require_http_methods(["POST"])
+def settings_update_password(request):
+    """
+    Accepts JSON body { currentPassword, newPassword } or form POST.
+    Returns JSON and keeps user logged in.
+    """
+    try:
+        payload = json.loads(request.body.decode()) if request.body else request.POST
+    except Exception:
+        payload = request.POST
+
+    current = payload.get('currentPassword')
+    new_password = payload.get('newPassword')
+
+    if not current or not new_password:
+        return JsonResponse({'success': False, 'message': 'Missing current or new password.'}, status=400)
+
+    user = request.user
+    if not user.check_password(current):
+        return JsonResponse({'success': False, 'message': 'Current password is incorrect.'}, status=400)
+
+    if len(new_password) < 8:
+        return JsonResponse({'success': False, 'message': 'New password must be at least 8 characters.'}, status=400)
+
+    try:
+        user.set_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)  # keep user logged in
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error updating password: {str(e)}'}, status=500)
+
+    return JsonResponse({'success': True, 'message': 'Password updated successfully'})

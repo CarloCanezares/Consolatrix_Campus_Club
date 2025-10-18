@@ -27,4 +27,6 @@ urlpatterns = [
     path('staff/', views.admin_dashboard, name='admin_dashboard'),
     path('staff/applications/', views.club_applications_list, name='admin_applications'),
     path('staff/applications/<int:pk>/<str:action>/', views.application_action, name='application_action'),
+     path('settings/update/general/', views.settings_update_general, name='settings_update_general'),
+    path('settings/update/password/', views.settings_update_password, name='settings_update_password'),
 ]

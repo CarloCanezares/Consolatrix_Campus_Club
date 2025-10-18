@@ -645,6 +645,41 @@
             opacity: 0.8;
         }
 
+        /* Enhanced Back Button */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-navy) 100%);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.3);
+}
+
+.back-btn:hover {
+    transform: translateY(-2px) translateX(-5px);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.4);
+}
+
+.back-btn:active {
+    transform: translateY(0) translateX(-3px);
+}
+
+.back-btn i {
+    transition: transform 0.3s ease;
+}
+
+.back-btn:hover i {
+    transform: translateX(-3px);
+}
+
         /* Responsive */
         @media (max-width: 768px) {
             .settings-nav {
@@ -665,14 +700,16 @@
     </style>
 </head>
 <body>
-    <!-- Your existing navbar and sidebar code -->
+    <!-- Your existing navbar and sidebar code
     
     <!-- Settings Container -->
     <div class="settings-container">
         <!-- Settings Header -->
         <div class="settings-header">
+            <!-- Back button -->
+            <button id="backBtn" class="back-btn" type="button" title="Go back">← Back</button>
+
             <h1>Settings</h1>
-            <p>Manage your account preferences and customize your experience</p>
         </div>
 
         <!-- Settings Navigation -->
@@ -858,6 +895,18 @@
             event.target.classList.add('active');
             document.getElementById(tabName + '-settings').classList.add('active');
         }
+
+        // Back Button Functionality
+        document.getElementById('backBtn').addEventListener('click', function(){
+    // Prefer referrer, otherwise use history.back(), fallback to profile
+    if (document.referrer && document.referrer !== window.location.href) {
+        window.location.href = document.referrer;
+    } else if (history.length > 1) {
+        history.back();
+    } else {
+        window.location.href = "{% url 'profile' %}";
+    }
+});
     </script>
 </body>
 </html>
