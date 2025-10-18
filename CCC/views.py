@@ -11,6 +11,8 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.db.models import Count
 from .models import Club, ClubApplication, User  # Import models instead of defining them
+from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
 import json
 def trial(request):
     return render(request, 'trial.html')
@@ -234,38 +236,66 @@ def profile(request):
 @require_http_methods(["POST"])
 def profile_update(request):
     """
-    Update current user's profile. Supports form POST and JSON.
-    Returns JSON when request is JSON, otherwise redirects back to profile.
+    Accepts POST from profile form. Updates fields when present on user model.
+    Returns JSON on AJAX/fetch, otherwise redirects back to profile.
     """
     user = request.user
+    data = request.POST
 
-    # parse input
-    if request.content_type == 'application/json':
-        try:
-            data = json.loads(request.body)
-        except Exception:
-            return JsonResponse({'success': False, 'message': 'Invalid JSON'}, status=400)
-    else:
-        data = request.POST
+    # Full name -> first_name / last_name
+    full_name = data.get('fullName') or data.get('full_name') or ''
+    if full_name:
+        parts = full_name.strip().split(None, 1)
+        user.first_name = parts[0]
+        user.last_name = parts[1] if len(parts) > 1 else ''
 
-    # update common fields (safe — leave unchanged if not provided)
-    user.first_name = data.get('first_name') or data.get('firstName') or user.first_name
-    user.last_name = data.get('last_name') or data.get('lastName') or user.last_name
-    # optional custom fields
-    if hasattr(user, 'student_id'):
-        user.student_id = data.get('student_id') or data.get('studentId') or getattr(user, 'student_id', '')
+    # Common fields
+    email = data.get('email')
+    if email:
+        user.email = email
+
     if hasattr(user, 'phone'):
-        user.phone = data.get('phone', getattr(user, 'phone', ''))
+        phone = data.get('phone')
+        if phone is not None:
+            user.phone = phone
+
+    if hasattr(user, 'year_level'):
+        year_level = data.get('yearLevel') or data.get('year_level')
+        if year_level is not None:
+            user.year_level = year_level
+
+    if hasattr(user, 'department'):
+        dept = data.get('department')
+        if dept is not None:
+            user.department = dept
+
     if hasattr(user, 'bio'):
-        user.bio = data.get('bio', getattr(user, 'bio', ''))
+        bio = data.get('bio')
+        if bio is not None:
+            user.bio = bio
 
-    user.save()
+    # interests: split comma list into python list when provided
+    if hasattr(user, 'interests'):
+        interests_raw = data.get('interests')
+        if interests_raw is not None:
+            # convert "a, b, c" -> ["a","b","c"]
+            interests_list = [s.strip() for s in interests_raw.split(',') if s.strip()]
+            try:
+                user.interests = interests_list
+            except Exception:
+                # fallback to raw string if assignment fails
+                user.interests = interests_raw
 
-    if request.content_type == 'application/json':
-        return JsonResponse({'success': True, 'message': 'Profile updated'})
+    try:
+        user.save()
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error saving profile: {str(e)}'}, status=500)
+
+    # respond JSON for fetch; otherwise redirect
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+        return JsonResponse({'success': True, 'message': 'Profile updated successfully'})
     messages.success(request, 'Profile updated successfully')
     return redirect('profile')
-
 
 @staff_member_required
 def admin_dashboard(request):
